@@ -296,6 +296,13 @@
          cursor: pointer;
          color: var(--text-color)
       }
+      :focus {
+         outline: 2px solid var(--button-bg);
+         outline-offset: 2px;
+      }
+      .badge-close:focus {
+         outline: 2px solid var(--text-color);
+      }
       footer {
          background: var(--footer-bg-dark);
          color: var(--footer-text-dark);
