@@ -627,67 +627,61 @@
             <button id="backToTop">© <span id="current-year"></span> Sri Pranavi Chintalapudi's Ranga Pravesam. Crafted with love for a memorable celebration.</button>
          </p>
       </div>
-   </footer><script>
-    document.addEventListener("DOMContentLoaded", () => {
-        // Set the current year in the footer dynamically
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-
-        // --- Smooth Scrolling for Navigation Links & Active State ---
-        // Attaches click listeners to all navigation links.
-        // Prevents default jump, smoothly scrolls to target section, and highlights the active link.
-        document.querySelectorAll("header .nav-links a").forEach(link => {
+   </footer>
+   <script>
+      document.addEventListener("DOMContentLoaded", () => {
+         document.getElementById('current-year').textContent = new Date().getFullYear();
+         const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
+         const countdown = document.getElementById('countdown');
+         if (countdown) {
+            setInterval(() => {
+               const now = new Date();
+               const diff = eventDate - now;
+               if (diff > 0) {
+                  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                  countdown.textContent = `${days}d ${hours}h ${minutes}m to the event!`;
+               } else {
+                  countdown.textContent = 'The event has started!';
+               }
+            }, 1000);
+         }
+         document.querySelectorAll("header .nav-links a").forEach(link => {
             link.addEventListener("click", (e) => {
-                e.preventDefault(); // Stop the default anchor link behavior
-                const targetId = link.getAttribute("href").substring(1); // Get the section ID from the href
-                const targetSection = document.getElementById(targetId);
-
-                if (targetSection) {
-                    targetSection.scrollIntoView({ behavior: "smooth" }); // Smoothly scroll to the section
-
-                    // Remove 'active' class from all nav items
-                    document.querySelectorAll(".nav-links .nav-item").forEach(item => {
-                        item.classList.remove("active");
-                    });
-                    // Add 'active' class to the currently clicked nav item
-                    link.classList.add("active");
-                }
+               e.preventDefault();
+               const targetId = link.getAttribute("href").substring(1);
+               const targetSection = document.getElementById(targetId);
+               if (targetSection) {
+                  targetSection.scrollIntoView({ behavior: "smooth" });
+                  document.querySelectorAll(".nav-links .nav-item").forEach(item => {
+                     item.classList.remove("active");
+                  });
+                  link.classList.add("active");
+               }
             });
-        });
-
-        // --- Header Scroll Effect ---
-        // Adds/removes a 'scrolled' class to the header based on scroll position.
-        // This allows CSS to change header styles (e.g., height, background) when scrolled.
-        const header = document.querySelector('header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) { // If scrolled down more than 50px
-                header.classList.add('scrolled');
+         });
+         const header = document.querySelector('header');
+         window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+               header.classList.add('scrolled');
             } else {
-                header.classList.remove('scrolled');
+               header.classList.remove('scrolled');
             }
-        });
-
-        // --- Theme Toggle Functionality with Persistence ---
-        // Handles switching between light and dark themes and saves the preference to local storage.
-        const themeToggle = document.getElementById('theme-toggle');
-        // Retrieve saved theme from local storage, default to 'dark' if none is found
-        const savedTheme = localStorage.getItem('theme') || 'dark';
-        document.documentElement.setAttribute('data-theme', savedTheme); // Apply the saved/default theme
-        // Set the correct icon based on the initial theme
-        themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-
-        themeToggle.addEventListener('click', () => {
+         });
+         const themeToggle = document.getElementById('theme-toggle');
+         const savedTheme = localStorage.getItem('theme') || 'dark';
+         document.documentElement.setAttribute('data-theme', savedTheme);
+         themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+         themeToggle.addEventListener('click', () => {
             const html = document.documentElement;
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme); // Apply the new theme
-            localStorage.setItem('theme', newTheme); // Save the new theme preference
-            // Update the icon to reflect the new theme
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
             themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-        });
-
-        // --- Gamification Badges (Appear on Scroll into View) ---
-        // Defines sections that will trigger badges and uses Intersection Observer for efficient detection.
-        const sectionsToGamify = [
+         });
+         const sectionsToGamify = [
             { id: "about", badgeId: "badge-container-about" },
             { id: "guru", badgeId: "badge-container-guru" },
             { id: "achievements", badgeId: "badge-container-achievements" },
@@ -695,104 +689,112 @@
             { id: "invitation", badgeId: "badge-container-invitation" },
             { id: "gallery", badgeId: "badge-container-gallery" },
             { id: "rsvp", badgeId: "badge-container-rsvp" }
-        ];
-
-        const observerOptions = {
-            root: null, // relative to the viewport
+         ];
+         const observerOptions = {
+            root: null,
             rootMargin: '0px',
-            threshold: 0.5 // Trigger when 50% of the target is visible
-        };
-
-        sectionsToGamify.forEach(({ id, badgeId }) => {
+            threshold: 0.5
+         };
+         sectionsToGamify.forEach(({ id, badgeId }) => {
             const section = document.getElementById(id);
             const badgeContainer = document.getElementById(badgeId);
-
             if (section && badgeContainer) {
-                const observer = new IntersectionObserver((entries) => {
-                    entries.forEach(entry => {
-                        // If the section is intersecting and the badge hasn't been unlocked yet
-                        if (entry.isIntersecting && !badgeContainer.classList.contains("unlocked")) {
-                            badgeContainer.classList.add("unlocked"); // Mark as unlocked
-                            badgeContainer.style.display = "block"; // Show the badge
-                            // Animate the badge appearance
-                            badgeContainer.animate([
-                                { transform: "scale(0.5)", opacity: 0 },
-                                { transform: "scale(1)", opacity: 1 }
-                            ], { duration: 1000, easing: "ease-out" });
-                            // Hide the badge after 3 seconds
-                            setTimeout(() => {
-                                badgeContainer.style.display = "none";
-                            }, 3000);
-                            observer.unobserve(section); // Stop observing this section once the badge is triggered
-                        }
-                    });
-                }, observerOptions);
-                observer.observe(section); // Start observing the section
-
-                // Add functionality to the badge's close button
-                const closeButton = badgeContainer.querySelector('.badge-close');
-                if (closeButton) {
-                    closeButton.addEventListener('click', () => {
-                        badgeContainer.style.display = 'none'; // Hide badge when close button is clicked
-                    });
-                }
+               const observer = new IntersectionObserver((entries) => {
+                  entries.forEach(entry => {
+                     if (entry.isIntersecting && !badgeContainer.classList.contains("unlocked")) {
+                        badgeContainer.classList.add("unlocked");
+                        badgeContainer.style.display = "block";
+                        badgeContainer.animate([
+                           { transform: "scale(0.5)", opacity: 0 },
+                           { transform: "scale(1)", opacity: 1 }
+                        ], { duration: 1000, easing: "ease-out" });
+                        setTimeout(() => {
+                           badgeContainer.style.display = "none";
+                        }, 3000);
+                        observer.unobserve(section);
+                     }
+                  });
+               }, observerOptions);
+               observer.observe(section);
+               const closeButton = badgeContainer.querySelector('.badge-close');
+               if (closeButton) {
+                  closeButton.addEventListener('click', () => {
+                     badgeContainer.style.display = 'none';
+                  });
+               }
             }
-        });
-
-        // --- RSVP Form Submission (using Formspree) ---
-        // Handles asynchronous form submission to Formspree, preventing page reload.
-        const rsvpForm = document.getElementById('rsvp-form');
-        rsvpForm.addEventListener('submit', async (e) => {
-            e.preventDefault(); // Prevent default form submission (page reload)
-            const form = e.target;
-            const formData = new FormData(form); // Get form data
-
-            try {
-                // Send form data to Formspree
-                const response = await fetch(form.action, {
-                    method: form.method,
-                    body: formData,
-                    headers: {
-                        'Accept': 'application/json' // Important for Formspree to return JSON
-                    }
-                });
-
-                if (response.ok) { // If submission was successful
-                    alert('Thank you for your RSVP! We look forward to seeing you.');
-                    form.reset(); // Clear the form
-                } else {
-                    // Handle Formspree specific errors
-                    const data = await response.json();
-                    if (data.errors) {
-                        alert('There was an error submitting your RSVP: ' + data.errors.map(error => error.message).join(', '));
-                    } else {
-                        alert('There was an error submitting your RSVP. Please try again.');
-                    }
-                }
-            } catch (error) {
-                console.error('Error submitting RSVP:', error);
-                alert('A network error occurred. Please try again.');
-            }
-        });
-
-        // --- Back to Top Button Functionality ---
-        // Smoothly scrolls the window to the top when the footer button is clicked.
-        document.getElementById('backToTop').addEventListener('click', function () {
-            window.scrollTo({
-                top: 0,
-                behavior: 'smooth'
+         });
+         const rsvpForm = document.getElementById('rsvp-form');
+         if (rsvpForm) {
+            rsvpForm.addEventListener('submit', async (e) => {
+               e.preventDefault();
+               const form = e.target;
+               const formData = new FormData(form);
+               try {
+                  const response = await fetch(form.action, {
+                     method: form.method,
+                     body: formData,
+                     headers: { 'Accept': 'application/json' }
+                  });
+                  if (response.ok) {
+                     alert('Thank you for your RSVP! We look forward to seeing you.');
+                     form.reset();
+                  } else {
+                     const data = await response.json();
+                     alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(error => error.message).join(', ') : 'Unknown error.'));
+                  }
+               } catch (error) {
+                  console.error('Error submitting RSVP:', error);
+                  alert('A network error occurred. Please try again.');
+               }
             });
-        });
-
-        // --- Google Maps iframe Source (IMPORTANT: Update this with your actual embed URL) ---
-        // This is a placeholder. You need to get the real embed URL from Google Maps.
-        // Go to Google Maps, find "Ravindra Bharati Auditorium, Hyderabad", click "Share" -> "Embed a map",
-        // and copy the 'src' attribute from the provided iframe code.
-        const mapIframe = document.querySelector('#event iframe');
-        if (mapIframe) {
+         }
+         const notifyForm = document.getElementById('notify-form');
+         const notifyMessage = document.getElementById('notify-message');
+         if (notifyForm && notifyMessage) {
+            notifyForm.addEventListener('submit', async (e) => {
+               e.preventDefault();
+               notifyMessage.style.display = 'none';
+               const formData = new FormData(notifyForm);
+               try {
+                  const response = await fetch(notifyForm.action, {
+                     method: notifyForm.method,
+                     body: formData,
+                     headers: { 'Accept': 'application/json' }
+                  });
+                  if (response.ok) {
+                     notifyMessage.textContent = 'Thank you! We’ll notify you when the invitation is ready.';
+                     notifyMessage.style.color = 'green';
+                     notifyMessage.style.display = 'block';
+                     notifyForm.reset();
+                     setTimeout(() => {
+                        notifyMessage.style.display = 'none';
+                     }, 5000);
+                  } else {
+                     const data = await response.json();
+                     notifyMessage.textContent = data.errors ? data.errors.map(e => e.message).join(', ') : 'Submission failed.';
+                     notifyMessage.style.color = 'red';
+                     notifyMessage.style.display = 'block';
+                  }
+               } catch (error) {
+                  console.error('Error submitting notification form:', error);
+                  notifyMessage.textContent = 'Network error. Please try again.';
+                  notifyMessage.style.color = 'red';
+                  notifyMessage.style.display = 'block';
+               }
+            });
+         }
+         document.getElementById('backToTop').addEventListener('click', function () {
+            window.scrollTo({
+               top: 0,
+               behavior: 'smooth'
+            });
+         });
+         const mapIframe = document.querySelector('#event iframe');
+         if (mapIframe) {
             mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
-        }
-    });
+         }
+      });
 </script>
 </body>
 </html>
