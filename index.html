@@ -33,6 +33,11 @@
          --achievement-item-bg: #fffaf0; 
          --achievement-icon-color: var(--button-bg); 
          --achievement-text-color: var(--text-color); 
+         --badge-bg: linear-gradient(135deg, #ffd700, #d4a017); /* Gold gradient for badges */
+         --badge-border: #b8860b; /* Darker gold for border */
+         --badge-shadow: rgba(0, 0, 0, 0.3);
+         --badge-text: #2c0b0e;
+         --badge-ribbon: #8b0000; /* Ribbon color */
       }
       [data-theme="light"] {
          --bg-color: #ffffff;
@@ -51,6 +56,11 @@
          --achievement-item-bg: #ffffff;
          --achievement-icon-color: var(--button-bg);
          --achievement-text-color: var(--text-color);
+         --badge-bg: linear-gradient(135deg, #e0e0e0, #c0c0c0); /* Silver gradient for light theme */
+         --badge-border: #a9a9a9;
+         --badge-shadow: rgba(0, 0, 0, 0.2);
+         --badge-text: #2c0b0e;
+         --badge-ribbon: #228b22;
       }
       html, body {
          font-family: 'Lora', serif;
@@ -270,22 +280,42 @@
          position: fixed;
          bottom: 20px;
          right: 20px;
-         background: var(--card-bg);
-         color: #fffaf0;
-         border-radius: 12px;
-         padding: 1.5rem;
-         box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+         background: var(--badge-bg);
+         color: var(--badge-text);
+         border-radius: 50%; /* Circular badge */
+         width: 200px;
+         height: 200px;
+         box-shadow: 0 8px 16px var(--badge-shadow);
          z-index: 1000;
+         overflow: hidden;
+         border: 4px solid var(--badge-border);
+         animation: badgeAppear 0.5s ease-out;
+         text-align: center;
+         display: flex;
+         align-items: center;
+         justify-content: center;
+         position: relative;
       }
       .badge-content {
          text-align: center;
+         padding: 1rem;
+         position: relative;
+         z-index: 2;
+      }
+      .badge-icon {
+         font-size: 2.5rem;
+         margin-bottom: 0.5rem;
+         color: var(--badge-text);
       }
       .badge-title {
-         font-size: 1.5rem;
-         margin-bottom: 0.5rem;
+         font-size: 1.2rem;
+         font-weight: bold;
+         margin-bottom: 0.3rem;
+         text-transform: uppercase;
       }
       .badge-message {
-         font-size: 1rem;
+         font-size: 0.9rem;
+         line-height: 1.2;
       }
       .badge-close {
          position: absolute;
@@ -295,14 +325,27 @@
          border: none;
          font-size: 1.2rem;
          cursor: pointer;
-         color: var(--text-color)
+         color: var(--badge-text);
+         z-index: 3;
+      }
+      .badge-container::before {
+         content: '';
+         position: absolute;
+         top: -20px;
+         left: 50%;
+         transform: translateX(-50%);
+         width: 80px;
+         height: 40px;
+         background: var(--badge-ribbon);
+         clip-path: polygon(0 0, 100% 0, 80% 100%, 20% 100%);
+         z-index: 1;
       }
       :focus {
          outline: 2px solid var(--button-bg);
          outline-offset: 2px;
       }
       .badge-close:focus {
-         outline: 2px solid var(--text-color);
+         outline: 2px solid var(--badge-text);
       }
       footer {
          background: var(--footer-bg-dark);
@@ -409,6 +452,19 @@
             margin-right: 0;
             margin-bottom: 1rem;
          }
+         .badge-container {
+            width: 150px;
+            height: 150px;
+         }
+         .badge-title {
+            font-size: 1rem;
+         }
+         .badge-message {
+            font-size: 0.8rem;
+         }
+         .badge-icon {
+            font-size: 2rem;
+         }
       }
    </style>
 </head>
@@ -461,8 +517,9 @@
          <p>An aspiring polyglot, she is committed to mastering Sanskrit from Sanskrit Bharathi Institute LLC, Dubai.</p>
          <div id="badge-container-about" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-user badge-icon"></i>
                <h3 class="badge-title">Welcome Badge</h3>
-               <p class="badge-message">You've unlocked the Welcome Badge!</p>
+               <p class="badge-message">Explored Pranavi's Journey!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -484,8 +541,9 @@
          <p>As a performer, choreographer, and guru, Smt. Preethi Tatambhotla continues to carry forward her guru’s legacy, inspiring the next generation to shine through classical dance.</p> 
          <div id="badge-container-guru" class="badge-container">
             <div class="badge-content">
-               <h3 class="badge-title">Guru's Dedication Badge</h3>
-               <p class="badge-message">You've learned about Pranavi's respected Guru!</p>
+               <i class="fas fa-graduation-cap badge-icon"></i>
+               <h3 class="badge-title">Guru's Dedication</h3>
+               <p class="badge-message">Honored the Guru!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -535,8 +593,9 @@
          </div>
          <div id="badge-container-achievements" class="badge-container">
             <div class="badge-content">
-               <h3 class="badge-title">Achievements Explorer Badge</h3>
-               <p class="badge-message">You've unlocked the Achievements Explorer Badge!</p>
+               <i class="fas fa-trophy badge-icon"></i>
+               <h3 class="badge-title">Achievements Explorer</h3>
+               <p class="badge-message">Celebrated Pranavi's Success!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -551,11 +610,12 @@
             <strong>Performance By:</strong> Sri Pranavi Chintalapudi<br>
             <strong>Guru:</strong> Smt. Preethi Tatambhotla</p>
          <div id="countdown" style="font-size: 1.5rem; margin: 1rem 0;"></div>
-         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3805.123456!2d78.4651!3d17.4019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb90b1b7d7a0a5%3A0x5c4e1a0f0d7b0a5!2sRavindra%20Bharati!5e0!3m2!1sen!2sin!4v1697500000000!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
          <div id="badge-container-event" class="badge-container">
             <div class="badge-content">
-               <h3 class="badge-title">Event Explorer Badge</h3>
-               <p class="badge-message">You've unlocked the Event Explorer Badge!</p>
+               <i class="fas fa-calendar-check badge-icon"></i>
+               <h3 class="badge-title">Event Explorer</h3>
+               <p class="badge-message">Discovered the Event!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -568,8 +628,9 @@
          </div>
          <div id="badge-container-invitation" class="badge-container">
             <div class="badge-content">
-               <h3 class="badge-title">Invitation Preview Badge</h3>
-               <p class="badge-message">You've unlocked the Invitation Preview Badge!</p>
+               <i class="fas fa-envelope badge-icon"></i>
+               <h3 class="badge-title">Invitation Preview</h3>
+               <p class="badge-message">Checked the Invitation!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -596,8 +657,9 @@
          </div>
          <div id="badge-container-gallery" class="badge-container">
             <div class="badge-content">
-               <h3 class="badge-title">Gallery Viewer Badge</h3>
-               <p class="badge-message">You've unlocked the Gallery Viewer Badge!</p>
+               <i class="fas fa-images badge-icon"></i>
+               <h3 class="badge-title">Gallery Viewer</h3>
+               <p class="badge-message">Browsed the Gallery!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -617,8 +679,9 @@
          </form>
          <div id="badge-container-rsvp" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-check-circle badge-icon"></i>
                <h3 class="badge-title">RSVP Badge</h3>
-               <p class="badge-message">You've unlocked the RSVP Badge!</p>
+               <p class="badge-message">Joined the Celebration!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -717,7 +780,7 @@
                   entries.forEach(entry => {
                      if (entry.isIntersecting && !badgeContainer.classList.contains("unlocked")) {
                         badgeContainer.classList.add("unlocked");
-                        badgeContainer.style.display = "block";
+                        badgeContainer.style.display = "flex";
                         badgeContainer.animate([
                            { transform: "scale(0.5)", opacity: 0 },
                            { transform: "scale(1)", opacity: 1 }
@@ -760,41 +823,6 @@
                } catch (error) {
                   console.error('Error submitting RSVP:', error);
                   alert('A network error occurred. Please try again.');
-               }
-            });
-         }
-         const notifyForm = document.getElementById('notify-form');
-         const notifyMessage = document.getElementById('notify-message');
-         if (notifyForm && notifyMessage) {
-            notifyForm.addEventListener('submit', async (e) => {
-               e.preventDefault();
-               notifyMessage.style.display = 'none';
-               const formData = new FormData(notifyForm);
-               try {
-                  const response = await fetch(notifyForm.action, {
-                     method: notifyForm.method,
-                     body: formData,
-                     headers: { 'Accept': 'application/json' }
-                  });
-                  if (response.ok) {
-                     notifyMessage.textContent = 'Thank you! We’ll notify you when the invitation is ready.';
-                     notifyMessage.style.color = 'green';
-                     notifyMessage.style.display = 'block';
-                     notifyForm.reset();
-                     setTimeout(() => {
-                        notifyMessage.style.display = 'none';
-                     }, 5000);
-                  } else {
-                     const data = await response.json();
-                     notifyMessage.textContent = data.errors ? data.errors.map(e => e.message).join(', ') : 'Submission failed.';
-                     notifyMessage.style.color = 'red';
-                     notifyMessage.style.display = 'block';
-                  }
-               } catch (error) {
-                  console.error('Error submitting notification form:', error);
-                  notifyMessage.textContent = 'Network error. Please try again.';
-                  notifyMessage.style.color = 'red';
-                  notifyMessage.style.display = 'block';
                }
             });
          }
