@@ -303,14 +303,14 @@
          border: none;
          font-size: 1.2rem;
          cursor: pointer;
-         color: #fffaf0; /* Changed to match popup text for visibility */
+         color: var(--text-color);
       }
       :focus {
          outline: 2px solid var(--button-bg);
          outline-offset: 2px;
       }
       .badge-close:focus {
-         outline: 2px solid #fffaf0; /* Match popup text */
+         outline: 2px solid var(--text-color);
       }
       .badge-grid {
          display: grid;
@@ -704,12 +704,7 @@
    </footer>
    <script>
       document.addEventListener("DOMContentLoaded", () => {
-         console.log("DOM loaded, initializing badge system...");
-
-         // Update current year
          document.getElementById('current-year').textContent = new Date().getFullYear();
-
-         // Countdown timer
          const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
          const countdown = document.getElementById('countdown');
          if (countdown) {
@@ -726,8 +721,6 @@
                }
             }, 1000);
          }
-
-         // Navigation smooth scroll and active state
          document.querySelectorAll("header .nav-links a").forEach(link => {
             link.addEventListener("click", (e) => {
                e.preventDefault();
@@ -742,8 +735,6 @@
                }
             });
          });
-
-         // Header scroll effect
          const header = document.querySelector('header');
          window.addEventListener('scroll', () => {
             if (window.scrollY > 50) {
@@ -752,8 +743,6 @@
                header.classList.remove('scrolled');
             }
          });
-
-         // Theme toggle
          const themeToggle = document.getElementById('theme-toggle');
          const savedTheme = localStorage.getItem('theme') || 'dark';
          document.documentElement.setAttribute('data-theme', savedTheme);
@@ -766,89 +755,61 @@
             localStorage.setItem('theme', newTheme);
             themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
          });
-
-         // Badge system
          function unlockBadge(badgeId) {
-            console.log(`Attempting to unlock badge: ${badgeId}`);
             let badges = JSON.parse(localStorage.getItem('badges') || '{}');
-            if (badges[badgeId]) {
-               console.log(`Badge ${badgeId} already unlocked, skipping popup`);
-               return; // Prevent re-unlocking
-            }
             badges[badgeId] = true;
             localStorage.setItem('badges', JSON.stringify(badges));
             const badgeContainer = document.getElementById(badgeId);
-            if (badgeContainer) {
-               console.log(`Showing popup for ${badgeId}`);
-               badgeContainer.classList.add('unlocked');
-               badgeContainer.style.display = 'block';
-               badgeContainer.animate([
-                  { transform: 'scale(0.5)', opacity: 0 },
-                  { transform: 'scale(1)', opacity: 1 }
-               ], { duration: 1000, easing: 'ease-out' });
-               setTimeout(() => {
-                  badgeContainer.style.display = 'none';
-                  console.log(`Hiding popup for ${badgeId}`);
-               }, 3000);
-               const badgeItem = document.getElementById(`badge-${badgeId.replace('badge-container-', '')}`);
-               if (badgeItem) {
-                  badgeItem.classList.add('unlocked');
-                  console.log(`Updated collection item for ${badgeId}`);
-               }
-               updateProgress();
-            } else {
-               console.error(`Badge container ${badgeId} not found`);
-            }
+            badgeContainer.classList.add('unlocked');
+            badgeContainer.style.display = 'block';
+            badgeContainer.animate([
+               { transform: 'scale(0.5)', opacity: 0 },
+               { transform: 'scale(1)', opacity: 1 }
+            ], { duration: 1000, easing: 'ease-out' });
+            setTimeout(() => {
+               badgeContainer.style.display = 'none';
+            }, 3000);
+            updateProgress();
+            const badgeItem = document.getElementById(`badge-${badgeId.replace('badge-container-', '')}`);
+            if (badgeItem) badgeItem.classList.add('unlocked');
          }
-
          function loadBadges() {
-            console.log("Loading badges from localStorage");
             let badges = JSON.parse(localStorage.getItem('badges') || '{}');
             Object.keys(badges).forEach(badgeId => {
                if (badges[badgeId]) {
-                  const badgeContainer = document.getElementById(badgeId);
+                  document.getElementById(badgeId).classList.add('unlocked');
                   const badgeItem = document.getElementById(`badge-${badgeId.replace('badge-container-', '')}`);
-                  if (badgeContainer) badgeContainer.classList.add('unlocked');
                   if (badgeItem) badgeItem.classList.add('unlocked');
-                  console.log(`Loaded unlocked state for ${badgeId}`);
                }
             });
-            updateProgress();
          }
-
          function updateProgress() {
             const badges = JSON.parse(localStorage.getItem('badges') || '{}');
             const unlockedCount = Object.values(badges).filter(Boolean).length;
             const totalBadges = 7;
             document.getElementById('badge-progress').textContent = `${unlockedCount}/${totalBadges} badges unlocked`;
-            console.log(`Updated progress: ${unlockedCount}/${totalBadges}`);
          }
-
-         // Sections to gamify (excluding RSVP)
          const sectionsToGamify = [
             { id: "about", badgeId: "badge-container-about" },
             { id: "guru", badgeId: "badge-container-guru" },
             { id: "achievements", badgeId: "badge-container-achievements" },
             { id: "event", badgeId: "badge-container-event" },
             { id: "invitation", badgeId: "badge-container-invitation" },
-            { id: "gallery", badgeId: "badge-container-gallery" }
+            { id: "gallery", badgeId: "badge-container-gallery" },
+            { id: "rsvp", badgeId: "badge-container-rsvp" }
          ];
-
          const observerOptions = {
             root: null,
             rootMargin: '0px',
             threshold: 0.5
          };
-
          sectionsToGamify.forEach(({ id, badgeId }) => {
             const section = document.getElementById(id);
             const badgeContainer = document.getElementById(badgeId);
             if (section && badgeContainer) {
-               console.log(`Setting up observer for section ${id}`);
                const observer = new IntersectionObserver((entries) => {
                   entries.forEach(entry => {
                      if (entry.isIntersecting && !badgeContainer.classList.contains("unlocked")) {
-                        console.log(`Section ${id} is visible, unlocking ${badgeId}`);
                         unlockBadge(badgeId);
                         observer.unobserve(section);
                      }
@@ -859,23 +820,16 @@
                if (closeButton) {
                   closeButton.addEventListener('click', () => {
                      badgeContainer.style.display = 'none';
-                     console.log(`Closed popup for ${badgeId}`);
                   });
                }
-            } else {
-               console.error(`Section ${id} or badge container ${badgeId} not found`);
             }
          });
-
-         // Load badges on page load
          loadBadges();
-
-         // RSVP form submission
+         updateProgress();
          const rsvpForm = document.getElementById('rsvp-form');
          if (rsvpForm) {
             rsvpForm.addEventListener('submit', async (e) => {
                e.preventDefault();
-               console.log("RSVP form submitted");
                const form = e.target;
                const formData = new FormData(form);
                try {
@@ -887,29 +841,21 @@
                   if (response.ok) {
                      alert('Thank you for your RSVP! We look forward to seeing you.');
                      form.reset();
-                     console.log("RSVP submission successful, unlocking RSVP badge");
-                     unlockBadge('badge-container-rsvp');
                   } else {
                      const data = await response.json();
                      alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(error => error.message).join(', ') : 'Unknown error.'));
-                     console.error("RSVP submission failed:", data);
                   }
                } catch (error) {
                   console.error('Error submitting RSVP:', error);
                   alert('A network error occurred. Please try again.');
                }
             });
-         } else {
-            console.error("RSVP form not found");
          }
-
-         // Notify form (if present)
          const notifyForm = document.getElementById('notify-form');
          const notifyMessage = document.getElementById('notify-message');
          if (notifyForm && notifyMessage) {
             notifyForm.addEventListener('submit', async (e) => {
                e.preventDefault();
-               console.log("Notify form submitted");
                notifyMessage.style.display = 'none';
                const formData = new FormData(notifyForm);
                try {
@@ -940,16 +886,12 @@
                }
             });
          }
-
-         // Back to top button
          document.getElementById('backToTop').addEventListener('click', function () {
             window.scrollTo({
                top: 0,
                behavior: 'smooth'
             });
          });
-
-         // Ensure map iframe loads
          const mapIframe = document.querySelector('#event iframe');
          if (mapIframe) {
             mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
