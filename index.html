@@ -757,6 +757,7 @@
          });
          function unlockBadge(badgeId) {
             let badges = JSON.parse(localStorage.getItem('badges') || '{}');
+            if (badges[badgeId]) return; // Prevent re-unlocking
             badges[badgeId] = true;
             localStorage.setItem('badges', JSON.stringify(badges));
             const badgeContainer = document.getElementById(badgeId);
@@ -795,8 +796,7 @@
             { id: "achievements", badgeId: "badge-container-achievements" },
             { id: "event", badgeId: "badge-container-event" },
             { id: "invitation", badgeId: "badge-container-invitation" },
-            { id: "gallery", badgeId: "badge-container-gallery" },
-            { id: "rsvp", badgeId: "badge-container-rsvp" }
+            { id: "gallery", badgeId: "badge-container-gallery" }
          ];
          const observerOptions = {
             root: null,
@@ -841,6 +841,7 @@
                   if (response.ok) {
                      alert('Thank you for your RSVP! We look forward to seeing you.');
                      form.reset();
+                     unlockBadge('badge-container-rsvp');
                   } else {
                      const data = await response.json();
                      alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(error => error.message).join(', ') : 'Unknown error.'));
