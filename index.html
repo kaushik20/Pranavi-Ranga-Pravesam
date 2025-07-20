@@ -13,7 +13,7 @@
    <meta property="og:image" content="./Images/pranavi-hero.jpg" />
    <title>Sri Pranavi Chintalapudi - Ranga Pravesam Celebration</title>
    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
+   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" integrity="sha512-Kc323vGBEqzTmouAECnVceyQqyqdsSiqLOQISBL29aUW4U/M7pSPA/gEUZQqv1cwx4OnYxTxve5UMg5GT6L4JJg==" crossorigin="anonymous" referrerpolicy="no-referrer">
    <style>
       :root {
          --bg-color: #fffaf0;
@@ -186,7 +186,7 @@
       }
       .section.boxed-section .section-subtitle {
          margin-bottom: 2rem;
-         text-align: centre;
+         text-align: center;
       }
       .section.boxed-section img {
          width: 250px; 
@@ -279,6 +279,14 @@
       }
       .badge-content {
          text-align: center;
+         display: flex;
+         flex-direction: column;
+         align-items: center;
+      }
+      .badge-content i {
+         font-size: 2.5rem;
+         margin-bottom: 0.5rem;
+         color: var(--achievement-icon-color);
       }
       .badge-title {
          font-size: 1.5rem;
@@ -295,7 +303,7 @@
          border: none;
          font-size: 1.2rem;
          cursor: pointer;
-         color: var(--text-color)
+         color: var(--text-color);
       }
       :focus {
          outline: 2px solid var(--button-bg);
@@ -303,6 +311,33 @@
       }
       .badge-close:focus {
          outline: 2px solid var(--text-color);
+      }
+      .badge-grid {
+         display: grid;
+         grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+         gap: 1rem;
+         margin: 2rem 0;
+      }
+      .badge-item {
+         background: var(--achievement-item-bg);
+         padding: 1rem;
+         border-radius: 8px;
+         text-align: center;
+         opacity: 0.5;
+         transition: opacity 0.3s ease;
+      }
+      .badge-item.unlocked {
+         opacity: 1;
+         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      }
+      .badge-item i {
+         font-size: 2rem;
+         margin-bottom: 0.5rem;
+         color: var(--achievement-icon-color);
+      }
+      .badge-item p {
+         margin: 0;
+         font-size: 1rem;
       }
       footer {
          background: var(--footer-bg-dark);
@@ -401,6 +436,9 @@
          .gallery-grid {
             grid-template-columns: 1fr;
          }
+         .badge-grid {
+            grid-template-columns: 1fr;
+         }
          #hero {
             flex-direction: column;
             text-align: center;
@@ -427,6 +465,7 @@
          <a href="#event" class="nav-item">Event Details</a>
          <a href="#invitation" class="nav-item">Invitation</a> 
          <a href="#gallery" class="nav-item">Gallery</a>
+         <a href="#badges" class="nav-item">Badges</a>
          <a href="#rsvp" class="nav-item">RSVP</a>
       </nav>
       <button id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
@@ -461,6 +500,7 @@
          <p>An aspiring polyglot, she is committed to mastering Sanskrit from Sanskrit Bharathi Institute LLC, Dubai.</p>
          <div id="badge-container-about" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-star"></i>
                <h3 class="badge-title">Welcome Badge</h3>
                <p class="badge-message">You've unlocked the Welcome Badge!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
@@ -484,6 +524,7 @@
          <p>As a performer, choreographer, and guru, Smt. Preethi Tatambhotla continues to carry forward her guru’s legacy, inspiring the next generation to shine through classical dance.</p> 
          <div id="badge-container-guru" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-dharmachakra"></i>
                <h3 class="badge-title">Guru's Dedication Badge</h3>
                <p class="badge-message">You've learned about Pranavi's respected Guru!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
@@ -535,6 +576,7 @@
          </div>
          <div id="badge-container-achievements" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-trophy"></i>
                <h3 class="badge-title">Achievements Explorer Badge</h3>
                <p class="badge-message">You've unlocked the Achievements Explorer Badge!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
@@ -551,9 +593,10 @@
             <strong>Performance By:</strong> Sri Pranavi Chintalapudi<br>
             <strong>Guru:</strong> Smt. Preethi Tatambhotla</p>
          <div id="countdown" style="font-size: 1.5rem; margin: 1rem 0;"></div>
-         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3805.123456!2d78.4651!3d17.4019!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb90b1b7d7a0a5%3A0x5c4e1a0f0d7b0a5!2sRavindra%20Bharati!5e0!3m2!1sen!2sin!4v1697500000000!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+         <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
          <div id="badge-container-event" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-calendar-alt"></i>
                <h3 class="badge-title">Event Explorer Badge</h3>
                <p class="badge-message">You've unlocked the Event Explorer Badge!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
@@ -568,6 +611,7 @@
          </div>
          <div id="badge-container-invitation" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-envelope"></i>
                <h3 class="badge-title">Invitation Preview Badge</h3>
                <p class="badge-message">You've unlocked the Invitation Preview Badge!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
@@ -596,11 +640,26 @@
          </div>
          <div id="badge-container-gallery" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-camera"></i>
                <h3 class="badge-title">Gallery Viewer Badge</h3>
                <p class="badge-message">You've unlocked the Gallery Viewer Badge!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
+      </section>
+      <section id="badges" class="section">
+         <h2>Your Badge Collection</h2>
+         <p class="section-subtitle">Track your progress!</p>
+         <div class="badge-grid">
+            <div class="badge-item" id="badge-about"><i class="fas fa-star"></i><p>Welcome Badge</p></div>
+            <div class="badge-item" id="badge-guru"><i class="fas fa-dharmachakra"></i><p>Guru's Dedication Badge</p></div>
+            <div class="badge-item" id="badge-achievements"><i class="fas fa-trophy"></i><p>Achievements Explorer Badge</p></div>
+            <div class="badge-item" id="badge-event"><i class="fas fa-calendar-alt"></i><p>Event Explorer Badge</p></div>
+            <div class="badge-item" id="badge-invitation"><i class="fas fa-envelope"></i><p>Invitation Preview Badge</p></div>
+            <div class="badge-item" id="badge-gallery"><i class="fas fa-camera"></i><p>Gallery Viewer Badge</p></div>
+            <div class="badge-item" id="badge-rsvp"><i class="fas fa-check-circle"></i><p>RSVP Badge</p></div>
+         </div>
+         <p id="badge-progress">0/7 badges unlocked</p>
       </section>
       <section id="rsvp" class="section">
          <h2>RSVP</h2>
@@ -617,6 +676,7 @@
          </form>
          <div id="badge-container-rsvp" class="badge-container">
             <div class="badge-content">
+               <i class="fas fa-check-circle"></i>
                <h3 class="badge-title">RSVP Badge</h3>
                <p class="badge-message">You've unlocked the RSVP Badge!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
@@ -695,6 +755,40 @@
             localStorage.setItem('theme', newTheme);
             themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
          });
+         function unlockBadge(badgeId) {
+            let badges = JSON.parse(localStorage.getItem('badges') || '{}');
+            badges[badgeId] = true;
+            localStorage.setItem('badges', JSON.stringify(badges));
+            const badgeContainer = document.getElementById(badgeId);
+            badgeContainer.classList.add('unlocked');
+            badgeContainer.style.display = 'block';
+            badgeContainer.animate([
+               { transform: 'scale(0.5)', opacity: 0 },
+               { transform: 'scale(1)', opacity: 1 }
+            ], { duration: 1000, easing: 'ease-out' });
+            setTimeout(() => {
+               badgeContainer.style.display = 'none';
+            }, 3000);
+            updateProgress();
+            const badgeItem = document.getElementById(`badge-${badgeId.replace('badge-container-', '')}`);
+            if (badgeItem) badgeItem.classList.add('unlocked');
+         }
+         function loadBadges() {
+            let badges = JSON.parse(localStorage.getItem('badges') || '{}');
+            Object.keys(badges).forEach(badgeId => {
+               if (badges[badgeId]) {
+                  document.getElementById(badgeId).classList.add('unlocked');
+                  const badgeItem = document.getElementById(`badge-${badgeId.replace('badge-container-', '')}`);
+                  if (badgeItem) badgeItem.classList.add('unlocked');
+               }
+            });
+         }
+         function updateProgress() {
+            const badges = JSON.parse(localStorage.getItem('badges') || '{}');
+            const unlockedCount = Object.values(badges).filter(Boolean).length;
+            const totalBadges = 7;
+            document.getElementById('badge-progress').textContent = `${unlockedCount}/${totalBadges} badges unlocked`;
+         }
          const sectionsToGamify = [
             { id: "about", badgeId: "badge-container-about" },
             { id: "guru", badgeId: "badge-container-guru" },
@@ -716,15 +810,7 @@
                const observer = new IntersectionObserver((entries) => {
                   entries.forEach(entry => {
                      if (entry.isIntersecting && !badgeContainer.classList.contains("unlocked")) {
-                        badgeContainer.classList.add("unlocked");
-                        badgeContainer.style.display = "block";
-                        badgeContainer.animate([
-                           { transform: "scale(0.5)", opacity: 0 },
-                           { transform: "scale(1)", opacity: 1 }
-                        ], { duration: 1000, easing: "ease-out" });
-                        setTimeout(() => {
-                           badgeContainer.style.display = "none";
-                        }, 3000);
+                        unlockBadge(badgeId);
                         observer.unobserve(section);
                      }
                   });
@@ -738,6 +824,8 @@
                }
             }
          });
+         loadBadges();
+         updateProgress();
          const rsvpForm = document.getElementById('rsvp-form');
          if (rsvpForm) {
             rsvpForm.addEventListener('submit', async (e) => {
@@ -809,6 +897,6 @@
             mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
          }
       });
-</script>
+   </script>
 </body>
 </html>
