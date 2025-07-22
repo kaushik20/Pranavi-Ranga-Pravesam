@@ -741,156 +741,217 @@
    </footer>
    <script>
       document.addEventListener("DOMContentLoaded", () => {
-         // ===================== ORIGINAL FEATURES =====================
-         document.getElementById('current-year').textContent = new Date().getFullYear();
-         
-         const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
-         const countdown = document.getElementById('countdown');
-         if (countdown) {
-            setInterval(() => {
-               const now = new Date();
-               const diff = eventDate - now;
-               if (diff > 0) {
-                  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                  countdown.textContent = `${days}d ${hours}h ${minutes}m to the event!`;
-               } else {
-                  countdown.textContent = 'The event has started!';
-               }
-            }, 1000);
-         }
-         
-         document.querySelectorAll("header .nav-links a").forEach(link => {
-            link.addEventListener("click", (e) => {
-               e.preventDefault();
-               const targetId = link.getAttribute("href").substring(1);
-               const targetSection = document.getElementById(targetId);
-               if (targetSection) {
-                  targetSection.scrollIntoView({ behavior: "smooth" });
-                  document.querySelectorAll(".nav-links .nav-item").forEach(item => item.classList.remove("active"));
-                  link.classList.add("active");
-               }
-            });
-         });
-         
-         const header = document.querySelector('header');
-         window.addEventListener('scroll', () => {
-            header.classList.toggle('scrolled', window.scrollY > 50);
-         });
-         
-         const themeToggle = document.getElementById('theme-toggle');
-         const savedTheme = localStorage.getItem('theme') || 'dark';
-         document.documentElement.setAttribute('data-theme', savedTheme);
-         themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-         themeToggle.addEventListener('click', () => {
-            const html = document.documentElement;
-            const currentTheme = html.getAttribute('data-theme');
-            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            html.setAttribute('data-theme', newTheme);
-            localStorage.setItem('theme', newTheme);
-            themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-         });
-         
-         const rsvpForm = document.getElementById('rsvp-form');
-         if (rsvpForm) {
-            rsvpForm.addEventListener('submit', async (e) => {
-               e.preventDefault();
-               const formData = new FormData(e.target);
-               try {
-                  const response = await fetch(e.target.action, {
-                     method: e.target.method,
-                     body: formData,
-                     headers: { 'Accept': 'application/json' }
-                  });
-                  if (response.ok) {
-                     alert('Thank you for your RSVP! We look forward to seeing you.');
-                     e.target.reset();
-                  } else {
-                     const data = await response.json();
-                     alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(err => err.message).join(', ') : 'Unknown error.'));
-                  }
-               } catch (error) {
-                  console.error('Error submitting RSVP:', error);
-                  alert('A network error occurred. Please try again.');
-               }
-            });
-         }
-         
-         document.getElementById('backToTop').addEventListener('click', () => {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-         });
-         
-         const mapIframe = document.querySelector('#event iframe');
-         if (mapIframe) {
-            mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396!2d78.47165!3d17.408986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97716976120d%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin"
-         }
-         
-         // ===================== CULTURAL VOICE EXPERIENCE =====================
-         const narrationTexts = {
-            about: "ప్రణవి చింతలపూడి బిట్స్ దుబాయ్‌లో చదువుతున్న విద్యార్థిని మరియు కూచిపూడి నర్తకి.",
-            guru: "శ్రీమతి ప్రీతి తాటంభోత్ల గారు, పద్మశ్రీ డాక్టర్ శోభా నాయుడు గారికి శిష్యురాలు.",
-            achievements: "ప్రణవి అనేక ప్రదర్శనలతో తన నాట్యప్రతిభను చాటుకుంది.",
-            event: "ఈ రంగప్రవేశం వేడుక ఆగస్టు 2వ తేదీ, 2025న సాయంత్రం 5:30 గంటలకు జరుగుతుంది.",
-            invitation: "ఈ పావన సందర్భంలో మీరు పాల్గొనడం మాకు గౌరవం.",
-            gallery: "ఈ గ్యాలరీలో ప్రణవి ప్రదర్శించిన నాట్య క్షణాలను మీరు ఆస్వాదించవచ్చు.",
-            rsvp: "దయచేసి మీ పేరును మరియు నిర్ణయాన్ని నమోదు చేయండి."
-         };
-         
-         const introSloka = "శ్రీ గురుభ్యో నమః। నాట్యం దేవతలకు అర్పణం।";
-         const introWelcome = "శ్రీమతి ప్రణవి చింతలపూడి గారి రంగప్రవేశం వెబ్‌సైట్‌కు స్వాగతం.";
-         
-         const bgMusic = new Audio("https://cdn.pixabay.com/audio/2023/03/28/audio_bfe3e40078.mp3");
-         const ambient = new Audio("https://cdn.pixabay.com/audio/2022/03/21/audio_d0604e6d3d.mp3");
-         bgMusic.loop = true;
-         bgMusic.volume = 0.25;
-         ambient.loop = true;
-         ambient.volume = 0.05;
-         
-         function speakTelugu(text, cb) {
-            const msg = new SpeechSynthesisUtterance(text);
-            msg.lang = 'te-IN';
-            msg.pitch = 1;
-            msg.rate = 0.95;
-            const voices = speechSynthesis.getVoices();
-            const telugu = voices.find(v => v.lang === 'te-IN');
-            if (telugu) msg.voice = telugu;
-            msg.onend = () => cb && cb();
-            speechSynthesis.cancel();
-            speechSynthesis.speak(msg);
-         }
-         
-         function narrateSectionsSequentially(ids, index = 0) {
-            if (index >= ids.length) return;
-            const id = ids[index];
-            if (narrationTexts[id]) {
-               speakTelugu(narrationTexts[id], () => {
-                  const nextSection = document.getElementById(ids[index + 1]);
-                  if (nextSection) nextSection.scrollIntoView({ behavior: 'smooth' });
-                  narrateSectionsSequentially(ids, index + 1);
-               });
-            } else {
-               narrateSectionsSequentially(ids, index + 1);
+            // Set current year
+            document.getElementById('current-year').textContent = new Date().getFullYear();
+            
+            // Countdown timer
+            const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
+            const countdown = document.getElementById('countdown');
+            if (countdown) {
+                setInterval(() => {
+                    const now = new Date();
+                    const diff = eventDate - now;
+                    if (diff > 0) {
+                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                        countdown.textContent = `${days}d ${hours}h ${minutes}m to the event!`;
+                    } else {
+                        countdown.textContent = 'The event has started!';
+                    }
+                }, 1000);
             }
-         }
-         
-         // Wait for user interaction to start narration and music
-         document.body.addEventListener('click', () => {
-            speechSynthesis.cancel();
-            speakTelugu(introSloka, () => {
-               speakTelugu(introWelcome, () => {
-                  playMusic();
-                  const allIds = Object.keys(narrationTexts);
-                  narrateSectionsSequentially(allIds);
-               });
+            
+            // Navigation smooth scrolling
+            document.querySelectorAll("header .nav-links a").forEach(link => {
+                link.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    const targetId = link.getAttribute("href").substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ behavior: "smooth" });
+                        document.querySelectorAll(".nav-links .nav-item").forEach(item => item.classList.remove("active"));
+                        link.classList.add("active");
+                    }
+                });
             });
-         }, { once: true });
-         
-         function playMusic() {
-            bgMusic.play().catch(() => {});
-            ambient.play().catch(() => {});
-         }
-      });
-   </script>
+            
+            // Sticky header
+            const header = document.querySelector('header');
+            window.addEventListener('scroll', () => {
+                header.classList.toggle('scrolled', window.scrollY > 50);
+            });
+            
+            // Theme toggle
+            const themeToggle = document.getElementById('theme-toggle');
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+            themeToggle.addEventListener('click', () => {
+                const html = document.documentElement;
+                const currentTheme = html.getAttribute('data-theme');
+                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                html.setAttribute('data-theme', newTheme);
+                localStorage.setItem('theme', newTheme);
+                themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+            });
+            
+            // RSVP form submission
+            const rsvpForm = document.getElementById('rsvp-form');
+            if (rsvpForm) {
+                rsvpForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    const formData = new FormData(e.target);
+                    const submitButton = e.target.querySelector('button');
+                    submitButton.disabled = true;
+                    submitButton.textContent = 'Submitting...';
+                    try {
+                        const response = await fetch(e.target.action, {
+                            method: e.target.method,
+                            body: formData,
+                            headers: { 'Accept': 'application/json' }
+                        });
+                        if (response.ok) {
+                            alert('Thank you for your RSVP! We look forward to seeing you.');
+                            e.target.reset();
+                        } else {
+                            const data = await response.json();
+                            alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(err => err.message).join(', ') : 'Unknown error.'));
+                        }
+                    } catch (error) {
+                        console.error('Error submitting RSVP:', error);
+                        alert('A network error occurred. Please try again.');
+                    } finally {
+                        submitButton.disabled = false;
+                        submitButton.textContent = 'Submit RSVP';
+                    }
+                });
+            }
+            
+            // Back to top
+            document.getElementById('backToTop').addEventListener('click', () => {
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+            
+            // Google Maps iframe
+            const mapIframe = document.querySelector('#event iframe');
+            if (mapIframe) {
+                mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396!2d78.47165!3d17.408986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97716976120d%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
+            }
+
+            // Badge visibility with IntersectionObserver
+            const badgeObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const badge = entry.target.querySelector('.badge-container');
+                        if (badge) badge.style.display = 'flex';
+                    }
+                });
+            }, { threshold: 0.5 });
+            document.querySelectorAll('.section').forEach(section => badgeObserver.observe(section));
+
+            // Telugu narration
+            const narrationTexts = {
+                hero: "నమస్తే, శ్రీ ప్రణవి చింతలపూడి గారి రంగప్రవేశం వెబ్‌సైట్‌కు స్వాగతం. " +
+                      "శ్రీ ప్రణవి చింతలపూడి గారి కూచిపూడి ఆరంగేట్రం యొక్క ప్రయాణాన్ని జరుపుకోవడం, ప్రారంభకుడి నుండి ప్రొఫెషనల్‌గా. ఆమె 11 సంవత్సరాల సమర్పణ మరియు కళాత్మకత యొక్క మైలురాయి.",
+                about: "శ్రీ ప్రణవి చింతలపూడి గురించి. ఆమె కూచిపూడి మరియు ఇతర రంగాలలో ప్రయాణం. " +
+                       "శ్రీ ప్రణవి చింతలపూడి బిట్స్ పిలానీ దుబాయ్ క్యాంపస్‌లో కంప్యూటర్ సైన్స్‌లో ఇంజనీరింగ్ విద్యార్థిని మరియు స్మత్. ప్రీతి తాటంభోత్ల గారి వద్ద గత ఎనిమిది సంవత్సరాలుగా కూచిపూడి నర్తకిగా శిక్షణ పొందుతున్నారు.",
+                guru: "గురువు శ్రీమతి ప్రీతి తాటంభోత్ల గారిని కలవండి. ప్రణవి యొక్క కళాత్మక ప్రయాణానికి మార్గదర్శకం. " +
+                      "స్మత్. ప్రీతి తాటంభోత్ల గారు పద్మశ్రీ డాక్టర్ శోభా నాయుడు గారి శిష్యురాలు మరియు ప్రముఖ కూచిపూడి నర్తకి.",
+                achievements: "ప్రణవి యొక్క విజయాలను జరుపుకోవడం. " +
+                             "ప్రణవి అనేక పోటీలలో మొదటి బహుమతులు సాధించారు మరియు నృత్య విస్మయ, నాట్య సురభి వంటి బిరుదులను పొందారు.",
+                event: "ఈ ప్రత్యేక సందర్భంలో మాతో చేరండి. " +
+                       "తేదీ: ఆగస్టు 2, 2025. సమయం: సాయంత్రం 5:30 నుండి 9:30 వరకు. " +
+                       "వేదిక: రవీంద్ర భారతి ఆడిటోరియం, హైదరాబాద్, తెలంగాణ.",
+                invitation: "మీ సమక్షంతో ఈ సందర్భాన్ని అలంకరించమని ఆహ్వానం. " +
+                            "శ్రీ ప్రణవి చింతలపూడి గారి రంగప్రవేశం వేడుకలో చేరండి.",
+                gallery: "ప్రణవి యొక్క నృత్య ప్రయాణం నుండి క్షణాలు. " +
+                         "ఈ గ్యాలరీలో ప్రణవి యొక్క నాట్య ప్రదర్శనల చిత్రాలను చూడండి.",
+                rsvp: "మీరు వస్తున్నారని మాకు తెలియజేయండి. " +
+                      "దయచేసి మీ పేరు, ఇమెయిల్ మరియు హాజరు స్థితిని నమోదు చేయండి."
+            };
+
+            const bgMusic = new Audio("https://cdn.pixabay.com/audio/2023/03/28/audio_bfe3e40078.mp3");
+            const ambient = new Audio("https://cdn.pixabay.com/audio/2022/03/21/audio_d0604e6d3d.mp3");
+            bgMusic.loop = true;
+            bgMusic.volume = 0.25;
+            ambient.loop = true;
+            ambient.volume = 0.05;
+
+            let currentNarration = null;
+
+            function speakTelugu(text, cb) {
+                const loadVoices = () => new Promise(resolve => {
+                    let voices = speechSynthesis.getVoices();
+                    if (voices.length) return resolve(voices);
+                    speechSynthesis.onvoiceschanged = () => {
+                        voices = speechSynthesis.getVoices();
+                        resolve(voices);
+                    };
+                });
+
+                loadVoices().then(voices => {
+                    const msg = new SpeechSynthesisUtterance(text);
+                    msg.lang = 'te-IN';
+                    msg.pitch = 1;
+                    msg.rate = 0.9;
+                    const teluguVoice = voices.find(v => v.lang === 'te-IN');
+                    if (teluguVoice) {
+                        msg.voice = teluguVoice;
+                        speechSynthesis.cancel();
+                        currentNarration = msg;
+                        speechSynthesis.speak(msg);
+                        msg.onend = () => {
+                            currentNarration = null;
+                            cb && cb();
+                        };
+                    } else {
+                        const fallback = document.createElement('div');
+                        fallback.textContent = `నారేషన్ అందుబాటులో లేదు: ${text.substring(0, 50)}...`;
+                        fallback.style.cssText = 'position: fixed; bottom: 20px; left: 20px; background: var(--bg-color); color: var(--text-color); padding: 1rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; font-family: "Lora", serif;';
+                        document.body.appendChild(fallback);
+                        setTimeout(() => fallback.remove(), 5000);
+                        cb && cb();
+                    }
+                });
+            }
+
+            // IntersectionObserver for narration
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const sectionId = entry.target.id;
+                    if (entry.isIntersecting && narrationTexts[sectionId]) {
+                        if (currentNarration) {
+                            speechSynthesis.cancel();
+                            currentNarration = null;
+                        }
+                        if (!bgMusic.currentTime || bgMusic.paused) {
+                            bgMusic.play().catch(() => {});
+                            ambient.play().catch(() => {});
+                        }
+                        speakTelugu(narrationTexts[sectionId]);
+                    } else if (!entry.isIntersecting && currentNarration) {
+                        speechSynthesis.cancel();
+                        currentNarration = null;
+                        bgMusic.pause();
+                        ambient.pause();
+                    }
+                });
+            }, { threshold: 0.5 });
+
+            // Observe all sections
+            document.querySelectorAll('section').forEach(section => {
+                observer.observe(section);
+            });
+
+            // Initial narration for hero section
+            if (narrationTexts.hero) {
+                speakTelugu(narrationTexts.hero, () => {
+                    bgMusic.play().catch(() => {});
+                    ambient.play().catch(() => {});
+                });
+            }
+        });
+    </script>
 </body>
 </html>
