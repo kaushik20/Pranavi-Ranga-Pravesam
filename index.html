@@ -32,12 +32,12 @@
          --achievement-item-bg: #fffaf0; 
          --achievement-icon-color: var(--button-bg); 
          --achievement-text-color: var(--text-color); 
-         --badge-bg: linear-gradient(135deg, #ffd700, #d4a017); /* Gold gradient for badges */
-         --badge-border: #b8860b; /* Darker gold for border */
+         --badge-bg: linear-gradient(135deg, #ffd700, #d4a017);
+         --badge-border: #b8860b;
          --badge-shadow: rgba(0, 0, 0, 0.4);
          --badge-text: #2c0b0e;
-         --badge-ribbon: #8b0000; /* Ribbon color */
-         --badge-glow: rgba(255, 215, 0, 0.6); /* Glow effect */
+         --badge-ribbon: #8b0000;
+         --badge-glow: rgba(255, 215, 0, 0.6);
       }
       [data-theme="light"] {
          --bg-color: #ffffff;
@@ -56,7 +56,7 @@
          --achievement-item-bg: #ffffff;
          --achievement-icon-color: var(--button-bg);
          --achievement-text-color: var(--text-color);
-         --badge-bg: linear-gradient(135deg, #e0e0e0, #c0c0c0); /* Silver gradient for light theme */
+         --badge-bg: linear-gradient(135deg, #e0e0e0, #c0c0c0);
          --badge-border: #a9a9a9;
          --badge-shadow: rgba(0, 0, 0, 0.3);
          --badge-text: #2c0b0e;
@@ -185,7 +185,7 @@
       .section.boxed-section {
          background: var(--achievement-item-bg);
          padding: 3rem 2rem; 
-         margin: 3rem auto; 
+         margin: 8rem auto; 
          border-radius: 12px; 
          box-shadow: 0 8px 20px rgba(0,0,0,0.15); 
          max-width: 900px;
@@ -283,7 +283,7 @@
          right: 40px;
          background: var(--badge-bg);
          color: var(--badge-text);
-         border-radius: 50%; /* Circular badge */
+         border-radius: 50%;
          width: 220px;
          height: 220px;
          box-shadow: 0 8px 16px var(--badge-shadow), 0 0 20px var(--badge-glow);
@@ -413,12 +413,13 @@
       #rsvp button:hover {
          background: var(--button-hover);
       }
-      #theme-toggle {
+      #theme-toggle, #voice-toggle {
          background: none;
          border: none;
          font-size: 1.5rem;
          cursor: pointer;
          color: var(--text-color);
+         margin-left: 1rem;
       }
       .footer-bar {
          background-color: #121212; 
@@ -515,6 +516,7 @@
          <a href="#rsvp" class="nav-item">RSVP</a>
       </nav>
       <button id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <button id="voice-toggle" aria-label="Start voice narration"><i class="fas fa-volume-up"></i></button>
    </header>
    <main>
       <section id="hero">
@@ -675,7 +677,7 @@
                <img src="./Images/20250323_125010.jpg" alt="Pranavi in costume during a rehearsal" loading="lazy">
             </div>
             <div class="gallery-item">
-               <img src="./Images/IMG-20250530-WA0000.jpg" alt="Pranavi performing on stage" loading="lazy">
+               <img src="./Images/IMG-20250531-WA0000.jpg" alt="Pranavi performing on stage" loading="lazy">
             </div>
             <div class="gallery-item">
                <img src="./Images/20250323_125104.jpg" alt="Pranavi performing on stage" loading="lazy">
@@ -812,7 +814,7 @@
             rootMargin: '0px',
             threshold: 0.5
          };
-         const badgeSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3'); // Replace with a celebratory sound file
+         const badgeSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
          sectionsToGamify.forEach(({ id, badgeId }) => {
             const section = document.getElementById(id);
             const badgeContainer = document.getElementById(badgeId);
@@ -828,13 +830,12 @@
                            { transform: "translateY(0) scale(0.95)", opacity: 1 },
                            { transform: "translateY(0) scale(1)", opacity: 1 }
                         ], { duration: 800, easing: "ease-out" });
-                        // Play sound if enabled
                         if (localStorage.getItem('soundEnabled') !== 'false') {
                            badgeSound.play().catch(error => console.log('Sound play failed:', error));
                         }
                         setTimeout(() => {
                            badgeContainer.style.display = "none";
-                        }, 4000); // Extended duration for better visibility
+                        }, 4000);
                         observer.unobserve(section);
                      }
                   });
@@ -889,6 +890,102 @@
          if (mapIframe) {
             mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
          }
+
+         // Voice Assistant
+         const voiceToggle = document.getElementById("voice-toggle");
+         let isSpeaking = false;
+         let utterance = null;
+
+         // Narration content for each section
+         const narrationContent = {
+            hero: "Welcome to Sri Pranavi Chintalapudi's Ranga Pravesam! Join us in celebrating her Kuchipudi debut, a milestone in her eleven-year journey of dedication and artistry. Scroll down to explore her story and RSVP for the event.",
+            about: "Sri Pranavi Chintalapudi is an aspiring engineering student at BITS Pilani, Dubai, and a dedicated Kuchipudi dancer. Trained for eight years under Smt. Preethi Tatambhotla, she’s a certified dancer from the University of Silicon Andhra, balancing academics and art. She’s performed lead roles in ballets like Kalyana Srinivasam and earned titles like Nritya Vismaya.",
+            guru: "Meet Guru Srimati Preethi Tatambhotla, an accomplished Kuchipudi dancer and disciple of Padma Shri Dr. Sobha Naidu. A two-time Guinness World Record holder, she’s performed for dignitaries like Prime Minister Narendra Modi and founded Tanmayi Art Studio to promote Kuchipudi globally.",
+            achievements: "Pranavi’s achievements shine bright! She’s won first prize in the Spring Nectar Foundation’s international competition, earned titles like Nritya Vismaya, and secured a gold medal at Indywood Talent Hunt. She’s also excelled in Carnatic vocal music and Sanskrit studies.",
+            event: "Join us on August 2, 2025, from 5:30 PM to 9:30 PM at Ravindra Bharati Auditorium, Hyderabad, for Pranavi’s Ranga Pravesam. This is a special occasion to witness her Kuchipudi performance, guided by her guru, Smt. Preethi Tatambhotla.",
+            invitation: "We warmly invite you to Sri Pranavi Chintalapudi’s Ranga Pravesam on August 2, 2025, at Ravindra Bharati Auditorium, Hyderabad. Your presence will make this celebration of art and dedication truly unforgettable. Please RSVP to confirm your attendance.",
+            gallery: "Explore moments from Pranavi’s dance journey in our gallery. From practice sessions to stage performances, these images capture her passion for Kuchipudi.",
+            rsvp: "Let us know you’re coming! Fill out the RSVP form to join us for Pranavi’s Ranga Pravesam and be part of this joyous occasion."
+         };
+
+         // Function to select a Telugu voice or fallback to English
+         function selectVoice() {
+            const voices = window.speechSynthesis.getVoices();
+            let selectedVoice = voices.find(voice => voice.lang === 'te-IN');
+            if (!selectedVoice) {
+               selectedVoice = voices.find(voice => voice.lang === 'en-US');
+               if (!selectedVoice) {
+                  alert('No Telugu or English voice available. Narration may not work as expected.');
+                  return null;
+               } else {
+                  alert('Telugu voice not available. Using English voice as fallback.');
+               }
+            }
+            return selectedVoice;
+         }
+
+         // Ensure voices are loaded before narration
+         window.speechSynthesis.onvoiceschanged = () => {
+            // Update voices when they are loaded
+         };
+
+         // Function to start or stop narration
+         function toggleNarration() {
+            if (isSpeaking) {
+               window.speechSynthesis.cancel();
+               isSpeaking = false;
+               voiceToggle.innerHTML = '<i class="fas fa-volume-up"></i>';
+               voiceToggle.setAttribute("aria-label", "Start voice narration");
+            } else {
+               isSpeaking = true;
+               voiceToggle.innerHTML = '<i class="fas fa-volume-mute"></i>';
+               voiceToggle.setAttribute("aria-label", "Stop voice narration");
+               narrateSections();
+            }
+         }
+
+         // Function to narrate sections based on visibility
+         function narrateSections() {
+            const observer = new IntersectionObserver(
+               (entries) => {
+                  entries.forEach((entry) => {
+                     if (entry.isIntersecting && isSpeaking) {
+                        const sectionId = entry.target.id;
+                        const text = narrationContent[sectionId];
+                        if (text) {
+                           utterance = new SpeechSynthesisUtterance(text);
+                           const selectedVoice = selectVoice();
+                           if (selectedVoice) {
+                              utterance.voice = selectedVoice;
+                              utterance.lang = selectedVoice.lang; // 'te-IN' or 'en-US'
+                              utterance.rate = 1.0;
+                              utterance.volume = 1.0;
+                              utterance.onend = () => {
+                                 // Continue observing for the next section
+                              };
+                              window.speechSynthesis.speak(utterance);
+                           }
+                        }
+                     }
+                  });
+               },
+               { root: null, threshold: 0.5 }
+            );
+
+            // Observe all sections
+            Object.keys(narrationContent).forEach((id) => {
+               const section = document.getElementById(id);
+               if (section) observer.observe(section);
+            });
+         }
+
+         // Toggle button event listener
+         voiceToggle.addEventListener("click", toggleNarration);
+
+         // Ensure narration stops when the page is unloaded
+         window.addEventListener("beforeunload", () => {
+            window.speechSynthesis.cancel();
+         });
       });
    </script>
 </body>
