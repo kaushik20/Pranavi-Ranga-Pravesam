@@ -764,116 +764,146 @@
       </div>
    </footer>
    <script>
-        document.addEventListener("DOMContentLoaded", () => {
-            // Set current year
-            document.getElementById('current-year').textContent = new Date().getFullYear();
-            
-            // Countdown timer
-            const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
-            const countdown = document.getElementById('countdown');
-            if (countdown) {
-                setInterval(() => {
-                    const now = new Date();
-                    const diff = eventDate - now;
-                    if (diff > 0) {
-                        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-                        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-                        const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-                        countdown.textContent = `${days}d ${hours}h ${minutes}m to the event!`;
-                    } else {
-                        countdown.textContent = 'The event has started!';
-                    }
-                }, 1000);
-            }
-            
-            // Navigation smooth scrolling
-            document.querySelectorAll("header .nav-links a").forEach(link => {
-                link.addEventListener("click", (e) => {
-                    e.preventDefault();
-                    const targetId = link.getAttribute("href").substring(1);
-                    const targetSection = document.getElementById(targetId);
-                    if (targetSection) {
-                        targetSection.scrollIntoView({ behavior: "smooth" });
-                        document.querySelectorAll(".nav-links .nav-item").forEach(item => item.classList.remove("active"));
-                        link.classList.add("active");
-                    }
-                });
+      document.addEventListener("DOMContentLoaded", () => {
+         // Set current year
+         document.getElementById('current-year').textContent = new Date().getFullYear();
+         
+         // Countdown timer
+         const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
+         const countdown = document.getElementById('countdown');
+         if (countdown) {
+            setInterval(() => {
+               const now = new Date();
+               const diff = eventDate - now;
+               if (diff > 0) {
+                  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                  countdown.textContent = `${days}d ${hours}h ${minutes}m to the event!`;
+               } else {
+                  countdown.textContent = 'The event has started!';
+               }
+            }, 1000);
+         }
+         
+         // Navigation smooth scrolling
+         document.querySelectorAll("header .nav-links a").forEach(link => {
+            link.addEventListener("click", (e) => {
+               e.preventDefault();
+               const targetId = link.getAttribute("href").substring(1);
+               const targetSection = document.getElementById(targetId);
+               if (targetSection) {
+                  targetSection.scrollIntoView({ behavior: "smooth" });
+                  document.querySelectorAll(".nav-links .nav-item").forEach(item => item.classList.remove("active"));
+                  link.classList.add("active");
+               }
             });
-            
-            // Sticky header
-            const header = document.querySelector('header');
-            window.addEventListener('scroll', () => {
-                header.classList.toggle('scrolled', window.scrollY > 50);
+         });
+         
+         // Sticky header
+         const header = document.querySelector('header');
+         window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+         });
+         
+         // Theme toggle
+         const themeToggle = document.getElementById('theme-toggle');
+         const savedTheme = localStorage.getItem('theme') || 'dark';
+         document.documentElement.setAttribute('data-theme', savedTheme);
+         themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+         themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+         });
+         
+         // RSVP form submission
+         const rsvpForm = document.getElementById('rsvp-form');
+         if (rsvpForm) {
+            rsvpForm.addEventListener('submit', async (e) => {
+               e.preventDefault();
+               const formData = new FormData(e.target);
+               const submitButton = e.target.querySelector('button');
+               submitButton.disabled = true;
+               submitButton.textContent = 'Submitting...';
+               try {
+                  const response = await fetch(e.target.action, {
+                     method: e.target.method,
+                     body: formData,
+                     headers: { 'Accept': 'application/json' }
+                  });
+                  if (response.ok) {
+                     alert('Thank you for your RSVP! We look forward to seeing you.');
+                     e.target.reset();
+                  } else {
+                     const data = await response.json();
+                     alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(err => err.message).join(', ') : 'Unknown error.'));
+                  }
+               } catch (error) {
+                  console.error('Error submitting RSVP:', error);
+                  alert('A network error occurred. Please try again.');
+               } finally {
+                  submitButton.disabled = false;
+                  submitButton.textContent = 'Submit RSVP';
+               }
             });
-            
-            // Theme toggle
-            const themeToggle = document.getElementById('theme-toggle');
-            const savedTheme = localStorage.getItem('theme') || 'dark';
-            document.documentElement.setAttribute('data-theme', savedTheme);
-            themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-            themeToggle.addEventListener('click', () => {
-                const html = document.documentElement;
-                const currentTheme = html.getAttribute('data-theme');
-                const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-                html.setAttribute('data-theme', newTheme);
-                localStorage.setItem('theme', newTheme);
-                themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-            });
-            
-            // RSVP form submission
-            const rsvpForm = document.getElementById('rsvp-form');
-            if (rsvpForm) {
-                rsvpForm.addEventListener('submit', async (e) => {
-                    e.preventDefault();
-                    const formData = new FormData(e.target);
-                    const submitButton = e.target.querySelector('button');
-                    submitButton.disabled = true;
-                    submitButton.textContent = 'Submitting...';
-                    try {
-                        const response = await fetch(e.target.action, {
-                            method: e.target.method,
-                            body: formData,
-                            headers: { 'Accept': 'application/json' }
-                        });
-                        if (response.ok) {
-                            alert('Thank you for your RSVP! We look forward to seeing you.');
-                            e.target.reset();
-                        } else {
-                            const data = await response.json();
-                            alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(err => err.message).join(', ') : 'Unknown error.'));
-                        }
-                    } catch (error) {
-                        console.error('Error submitting RSVP:', error);
-                        alert('A network error occurred. Please try again.');
-                    } finally {
-                        submitButton.disabled = false;
-                        submitButton.textContent = 'Submit RSVP';
-                    }
-                });
-            }
-            
-            // Back to top
-            document.getElementById('backToTop').addEventListener('click', () => {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            });
-            
-            // Google Maps iframe
-            const mapIframe = document.querySelector('#event iframe');
-            if (mapIframe) {
-                mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396!2d78.47165!3d17.408986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97716976120d%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
-            }
+         }
+         
+         // Back to top
+         document.getElementById('backToTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+         });
+         
+         // Google Maps iframe
+         const mapIframe = document.querySelector('#event iframe');
+         if (mapIframe) {
+            mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396!2d78.47165!3d17.408986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97716976120d%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
+         }
 
-            // Badge visibility
-            const badgeObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const badge = entry.target.querySelector('.badge-container');
-                        if (badge) badge.style.display = 'flex';
-                    }
-                });
-            }, { threshold: 0.5 });
-            document.querySelectorAll('section').forEach(section => badgeObserver.observe(section));
-        });
-    </script>
+         // Badge visibility with popup notification
+         const badgeObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+               if (entry.isIntersecting) {
+                  const badge = entry.target.querySelector('.badge-container');
+                  if (badge && !badge.classList.contains('shown')) {
+                     badge.style.display = 'flex';
+                     badge.classList.add('shown');
+                     // Add fade-out effect after 5 seconds
+                     setTimeout(() => {
+                        badge.style.opacity = '0';
+                        badge.style.transition = 'opacity 0.5s ease';
+                        // Hide badge after fade-out completes
+                        setTimeout(() => {
+                           badge.style.display = 'none';
+                           badge.style.opacity = '1'; // Reset opacity for potential future display
+                        }, 500);
+                     }, 5000);
+                  }
+               }
+            });
+         }, { threshold: 0.5 });
+
+         // Observe all sections for badges
+         document.querySelectorAll('section').forEach(section => badgeObserver.observe(section));
+
+         // Handle badge close button
+         document.querySelectorAll('.badge-close').forEach(button => {
+            button.addEventListener('click', () => {
+               const badge = button.closest('.badge-container');
+               if (badge) {
+                  badge.style.opacity = '0';
+                  badge.style.transition = 'opacity 0.5s ease';
+                  setTimeout(() => {
+                     badge.style.display = 'none';
+                     badge.style.opacity = '1'; // Reset opacity
+                  }, 500);
+               }
+            });
+         });
+      });
+   </script>
 </body>
 </html>
