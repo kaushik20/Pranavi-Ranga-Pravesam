@@ -414,7 +414,7 @@
       #rsvp button:hover {
          background: var(--button-hover);
       }
-      #theme-toggle {
+      #theme-toggle, #assistant-toggle {
          background: none;
          border: none;
          font-size: 1.5rem;
@@ -518,6 +518,7 @@
          <a href="#rsvp" class="nav-item">RSVP</a>
       </nav>
       <button id="theme-toggle" aria-label="Toggle theme"><i class="fas fa-moon"></i></button>
+      <button id="assistant-toggle" aria-label="Toggle AI Assistant"><i class="fas fa-volume-up"></i></button>
    </header>
    <main>
       <section id="hero">
@@ -863,6 +864,19 @@
             mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396!2d78.47165!3d17.408986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97716976120d%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
          }
 
+         // AI Assistant toggle
+         const assistantToggle = document.getElementById('assistant-toggle');
+         let isAssistantEnabled = localStorage.getItem('assistantEnabled') === 'true' || false;
+         assistantToggle.innerHTML = `<i class="fas fa-volume-${isAssistantEnabled ? 'up' : 'mute'}"></i>`;
+         assistantToggle.addEventListener('click', () => {
+            isAssistantEnabled = !isAssistantEnabled;
+            localStorage.setItem('assistantEnabled', isAssistantEnabled);
+            assistantToggle.innerHTML = `<i class="fas fa-volume-${isAssistantEnabled ? 'up' : 'mute'}"></i>`;
+            if (!isAssistantEnabled) {
+               window.speechSynthesis.cancel(); // Stop any ongoing speech
+            }
+         });
+
          // Badge visibility with popup notification
          const badgeObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -903,6 +917,64 @@
                }
             });
          });
+
+         // AI Assistant: Text-to-Speech for sections
+         const speakText = (text) => {
+            if (!isAssistantEnabled) return;
+            window.speechSynthesis.cancel(); // Cancel any ongoing speech
+            const utterance = new SpeechSynthesisUtterance(text);
+            // Select a natural-sounding voice
+            const voices = window.speechSynthesis.getVoices();
+            const preferredVoice = voices.find(voice => voice.name.includes('Google US English')) || voices.find(voice => voice.lang === 'en-US') || voices[0];
+            utterance.voice = preferredVoice;
+            utterance.lang = 'en-US';
+            utterance.rate = 0.9; // Slightly slower for clarity
+            utterance.pitch = 1.0; // Neutral pitch
+            utterance.volume = 0.8; // Slightly reduced volume
+            window.speechSynthesis.speak(utterance);
+         };
+
+         // Extract text from section, excluding badges and non-text elements
+         const getSectionText = (section) => {
+            const textElements = section.querySelectorAll('h1, h2, h3, p, li, strong');
+            let text = '';
+            textElements.forEach(element => {
+               // Skip badge content
+               if (!element.closest('.badge-container') && !element.closest('.invitation-placeholder') && !element.closest('#countdown')) {
+                  text += element.textContent.trim() + ' ';
+               }
+            });
+            return text.trim();
+         };
+
+         // Observe sections for text-to-speech
+         const speechObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+               if (entry.isIntersecting && isAssistantEnabled) {
+                  const section = entry.target;
+                  if (!section.classList.contains('spoken')) {
+                     const text = getSectionText(section);
+                     if (text) {
+                        speakText(text);
+                        section.classList.add('spoken');
+                     }
+                  }
+               }
+            });
+         }, { threshold: 0.5 });
+
+         // Observe all sections for speech
+         document.querySelectorAll('section').forEach(section => speechObserver.observe(section));
+
+         // Ensure voices are loaded before speaking
+         window.speechSynthesis.onvoiceschanged = () => {
+            // Re-observe sections if voices are loaded after initial DOM load
+            document.querySelectorAll('section').forEach(section => {
+               if (section.classList.contains('spoken')) {
+                  section.classList.remove('spoken'); // Allow re-speaking with new voices
+               }
+            });
+         };
       });
    </script>
 </body>
