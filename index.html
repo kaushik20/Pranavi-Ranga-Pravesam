@@ -740,7 +740,7 @@
       </div>
    </footer>
    <script>
-      document.addEventListener("DOMContentLoaded", () => {
+        document.addEventListener("DOMContentLoaded", () => {
             // Set current year
             document.getElementById('current-year').textContent = new Date().getFullYear();
             
@@ -839,7 +839,7 @@
                 mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396!2d78.47165!3d17.408986!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3bcb97716976120d%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
             }
 
-            // Badge visibility with IntersectionObserver
+            // Badge visibility
             const badgeObserver = new IntersectionObserver((entries) => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
@@ -848,14 +848,15 @@
                     }
                 });
             }, { threshold: 0.5 });
-            document.querySelectorAll('.section').forEach(section => badgeObserver.observe(section));
+            document.querySelectorAll('section').forEach(section => badgeObserver.observe(section));
 
-            // Telugu narration
+            // Telugu narration translations
             const narrationTexts = {
                 hero: "నమస్తే, శ్రీ ప్రణవి చింతలపూడి గారి రంగప్రవేశం వెబ్‌సైట్‌కు స్వాగతం. " +
-                      "శ్రీ ప్రణవి చింతలపూడి గారి కూచిపూడి ఆరంగేట్రం యొక్క ప్రయాణాన్ని జరుపుకోవడం, ప్రారంభకుడి నుండి ప్రొఫెషనల్‌గా. ఆమె 11 సంవత్సరాల సమర్పణ మరియు కళాత్మకత యొక్క మైలురాయి.",
+                      "ఒక కూచిపూడి నర్తకి యొక్క ప్రయాణాన్ని జరుపుకోవడం, ప్రారంభకుడి నుండి ప్రొఫెషనల్‌గా. " +
+                      "11 సంవత్సరాల సమర్పణ మరియు కళాత్మకత యొక్క మైలురాయి.",
                 about: "శ్రీ ప్రణవి చింతలపూడి గురించి. ఆమె కూచిపూడి మరియు ఇతర రంగాలలో ప్రయాణం. " +
-                       "శ్రీ ప్రణవి చింతలపూడి బిట్స్ పిలానీ దుబాయ్ క్యాంపస్‌లో కంప్యూటర్ సైన్స్‌లో ఇంజనీరింగ్ విద్యార్థిని మరియు స్మత్. ప్రీతి తాటంభోత్ల గారి వద్ద గత ఎనిమిది సంవత్సరాలుగా కూచిపూడి నర్తకిగా శిక్షణ పొందుతున్నారు.",
+                       "శ్రీ ప్రణవి బిట్స్ పిలానీ దుబాయ్ క్యాంపస్‌లో కంప్యూటర్ సైన్స్ ఇంజనీరింగ్ విద్యార్థిని మరియు స్మత్. ప్రీతి తాటంభోత్ల గారి వద్ద ఎనిమిది సంవత్సరాలుగా కూచిపూడి శిక్షణ పొందుతున్నారు.",
                 guru: "గురువు శ్రీమతి ప్రీతి తాటంభోత్ల గారిని కలవండి. ప్రణవి యొక్క కళాత్మక ప్రయాణానికి మార్గదర్శకం. " +
                       "స్మత్. ప్రీతి తాటంభోత్ల గారు పద్మశ్రీ డాక్టర్ శోభా నాయుడు గారి శిష్యురాలు మరియు ప్రముఖ కూచిపూడి నర్తకి.",
                 achievements: "ప్రణవి యొక్క విజయాలను జరుపుకోవడం. " +
@@ -881,23 +882,20 @@
             let currentNarration = null;
 
             function speakTelugu(text, cb) {
-                const loadVoices = () => new Promise(resolve => {
-                    let voices = speechSynthesis.getVoices();
-                    if (voices.length) return resolve(voices);
-                    speechSynthesis.onvoiceschanged = () => {
-                        voices = speechSynthesis.getVoices();
-                        resolve(voices);
-                    };
-                });
+                const maxRetries = 3;
+                let retryCount = 0;
 
-                loadVoices().then(voices => {
-                    const msg = new SpeechSynthesisUtterance(text);
-                    msg.lang = 'te-IN';
-                    msg.pitch = 1;
-                    msg.rate = 0.9;
+                const attemptSpeak = () => {
+                    const voices = speechSynthesis.getVoices();
+                    console.log('Available voices:', voices.map(v => v.lang)); // Debugging
                     const teluguVoice = voices.find(v => v.lang === 'te-IN');
+
                     if (teluguVoice) {
+                        const msg = new SpeechSynthesisUtterance(text);
+                        msg.lang = 'te-IN';
                         msg.voice = teluguVoice;
+                        msg.pitch = 1;
+                        msg.rate = 0.9;
                         speechSynthesis.cancel();
                         currentNarration = msg;
                         speechSynthesis.speak(msg);
@@ -905,15 +903,26 @@
                             currentNarration = null;
                             cb && cb();
                         };
+                        console.log(`Narrating: ${text.substring(0, 50)}...`); // Debugging
+                    } else if (retryCount < maxRetries) {
+                        retryCount++;
+                        console.log(`Retry ${retryCount}/${maxRetries} for te-IN voice`);
+                        setTimeout(attemptSpeak, 500); // Retry after 500ms
                     } else {
+                        console.log('Telugu voice unavailable after retries');
                         const fallback = document.createElement('div');
-                        fallback.textContent = `నారేషన్ అందుబాటులో లేదు: ${text.substring(0, 50)}...`;
-                        fallback.style.cssText = 'position: fixed; bottom: 20px; left: 20px; background: var(--bg-color); color: var(--text-color); padding: 1rem; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.2); z-index: 1000; font-family: "Lora", serif;';
+                        fallback.textContent = `నారేషన్ అందుబాటులో లేదు: ${text.substring(0, 30)}...`;
+                        fallback.style.cssText = 'position: fixed; bottom: 10px; left: 10px; background: var(--bg-color); color: var(--text-color); padding: 0.5rem; border-radius: 5px; font-size: 0.9rem; box-shadow: 0 2px 4px rgba(0,0,0,0.2); z-index: 1000; font-family: "Lora", serif;';
                         document.body.appendChild(fallback);
-                        setTimeout(() => fallback.remove(), 5000);
+                        setTimeout(() => fallback.remove(), 3000);
                         cb && cb();
                     }
-                });
+                };
+
+                // Trigger voice loading
+                speechSynthesis.getVoices();
+                speechSynthesis.onvoiceschanged = attemptSpeak;
+                attemptSpeak();
             }
 
             // IntersectionObserver for narration
