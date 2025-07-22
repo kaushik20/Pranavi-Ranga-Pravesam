@@ -737,196 +737,216 @@
       </div>
    </footer>
    <script>
-document.addEventListener("DOMContentLoaded", () => {
-   // Initialize current year
-   document.getElementById('current-year').textContent = new Date().getFullYear();
-
-   // Countdown timer
-   const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
-   const countdown = document.getElementById('countdown');
-   if (countdown) {
-      setInterval(() => {
-         const now = new Date();
-         const diff = eventDate - now;
-         if (diff > 0) {
-            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            countdown.textContent = `${days}d ${hours}h ${minutes}m to the event!`;
-         } else {
-            countdown.textContent = 'The event has started!';
+      // 🪔 Ranga Pravesam Website JavaScript (Full Feature Build)
+      document.addEventListener("DOMContentLoaded", () => {
+         // ===================== BASIC SITE FUNCTIONALITY =====================
+         // Initialize current year
+         document.getElementById('current-year').textContent = new Date().getFullYear();
+         
+         // Countdown timer
+         const eventDate = new Date('August 2, 2025 17:30:00 GMT+0530');
+         const countdown = document.getElementById('countdown');
+         if (countdown) {
+            setInterval(() => {
+               const now = new Date();
+               const diff = eventDate - now;
+               if (diff > 0) {
+                  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+                  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                  countdown.textContent = `${days}d ${hours}h ${minutes}m to the event!`;
+               } else {
+                  countdown.textContent = 'The event has started!';
+               }
+            }, 1000);
          }
-      }, 1000);
-   }
-
-   // Smooth scroll for nav
-   document.querySelectorAll("header .nav-links a").forEach(link => {
-      link.addEventListener("click", (e) => {
-         e.preventDefault();
-         const targetId = link.getAttribute("href").substring(1);
-         const targetSection = document.getElementById(targetId);
-         if (targetSection) {
-            targetSection.scrollIntoView({ behavior: "smooth" });
-            document.querySelectorAll(".nav-links .nav-item").forEach(item => {
-               item.classList.remove("active");
-            });
-            link.classList.add("active");
-         }
-      });
-   });
-
-   // Header scroll effect
-   const header = document.querySelector('header');
-   window.addEventListener('scroll', () => {
-      header.classList.toggle('scrolled', window.scrollY > 50);
-   });
-
-   // Theme toggle
-   const themeToggle = document.getElementById('theme-toggle');
-   const savedTheme = localStorage.getItem('theme') || 'dark';
-   document.documentElement.setAttribute('data-theme', savedTheme);
-   themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-   themeToggle.addEventListener('click', () => {
-      const html = document.documentElement;
-      const currentTheme = html.getAttribute('data-theme');
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      html.setAttribute('data-theme', newTheme);
-      localStorage.setItem('theme', newTheme);
-      themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
-   });
-
-   // Badge system
-   const sectionsToGamify = [
-      { id: "about", badgeId: "badge-container-about" },
-      { id: "guru", badgeId: "badge-container-guru" },
-      { id: "achievements", badgeId: "badge-container-achievements" },
-      { id: "event", badgeId: "badge-container-event" },
-      { id: "invitation", badgeId: "badge-container-invitation" },
-      { id: "gallery", badgeId: "badge-container-gallery" },
-      { id: "rsvp", badgeId: "badge-container-rsvp" }
-   ];
-   const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
-   const badgeSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
-
-   sectionsToGamify.forEach(({ id, badgeId }) => {
-      const section = document.getElementById(id);
-      const badgeContainer = document.getElementById(badgeId);
-      if (section && badgeContainer) {
-         const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-               if (entry.isIntersecting && !badgeContainer.classList.contains("unlocked")) {
-                  badgeContainer.classList.add("unlocked");
-                  badgeContainer.style.display = "flex";
-                  badgeContainer.animate([
-                     { transform: "translateY(100px) scale(0.5)", opacity: 0 },
-                     { transform: "translateY(0) scale(1.1)", opacity: 1 },
-                     { transform: "translateY(0) scale(0.95)", opacity: 1 },
-                     { transform: "translateY(0) scale(1)", opacity: 1 }
-                  ], { duration: 800, easing: "ease-out" });
-                  if (localStorage.getItem('soundEnabled') !== 'false') {
-                     badgeSound.play().catch(error => console.log('Sound play failed:', error));
-                  }
-                  setTimeout(() => {
-                     badgeContainer.style.display = "none";
-                  }, 4000);
-                  observer.unobserve(section);
+         
+         // Smooth scroll for nav
+         document.querySelectorAll("header .nav-links a").forEach(link => {
+            link.addEventListener("click", (e) => {
+               e.preventDefault();
+               const targetId = link.getAttribute("href").substring(1);
+               const targetSection = document.getElementById(targetId);
+               if (targetSection) {
+                  targetSection.scrollIntoView({ behavior: "smooth" });
+                  document.querySelectorAll(".nav-links .nav-item").forEach(item => {
+                     item.classList.remove("active");
+                  });
+                  link.classList.add("active");
                }
             });
-         }, observerOptions);
-         observer.observe(section);
-         const closeButton = badgeContainer.querySelector('.badge-close');
-         if (closeButton) {
-            closeButton.addEventListener('click', () => {
-               badgeContainer.style.display = 'none';
-            });
-         }
-      }
-   });
-
-   // RSVP form
-   const rsvpForm = document.getElementById('rsvp-form');
-   if (rsvpForm) {
-      rsvpForm.addEventListener('submit', async (e) => {
-         e.preventDefault();
-         const formData = new FormData(e.target);
-         try {
-            const response = await fetch(e.target.action, {
-               method: e.target.method,
-               body: formData,
-               headers: { 'Accept': 'application/json' }
-            });
-            if (response.ok) {
-               alert('Thank you for your RSVP! We look forward to seeing you.');
-               e.target.reset();
-            } else {
-               const data = await response.json();
-               alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(err => err.message).join(', ') : 'Unknown error.'));
+         });
+         // Header scroll effect
+         const header = document.querySelector('header');
+         window.addEventListener('scroll', () => {
+            header.classList.toggle('scrolled', window.scrollY > 50);
+         });
+         // Theme toggle
+         const themeToggle = document.getElementById('theme-toggle');
+         const savedTheme = localStorage.getItem('theme') || 'dark';
+         document.documentElement.setAttribute('data-theme', savedTheme);
+         themeToggle.innerHTML = `<i class="fas fa-${savedTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+         themeToggle.addEventListener('click', () => {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            themeToggle.innerHTML = `<i class="fas fa-${newTheme === 'dark' ? 'moon' : 'sun'}"></i>`;
+         });
+         // Badge system
+         const sectionsToGamify = [
+            { id: "about", badgeId: "badge-container-about" },
+            { id: "guru", badgeId: "badge-container-guru" },
+            { id: "achievements", badgeId: "badge-container-achievements" },
+            { id: "event", badgeId: "badge-container-event" },
+            { id: "invitation", badgeId: "badge-container-invitation" },
+            { id: "gallery", badgeId: "badge-container-gallery" },
+            { id: "rsvp", badgeId: "badge-container-rsvp" }
+         ];
+         const observerOptions = { root: null, rootMargin: '0px', threshold: 0.5 };
+         const badgeSound = new Audio('https://www.soundjay.com/buttons/sounds/button-3.mp3');
+         sectionsToGamify.forEach(({ id, badgeId }) => {
+            const section = document.getElementById(id);
+            const badgeContainer = document.getElementById(badgeId);
+            if (section && badgeContainer) {
+               const observer = new IntersectionObserver((entries) => {
+                  entries.forEach(entry => {
+                     if (entry.isIntersecting && !badgeContainer.classList.contains("unlocked")) {
+                        badgeContainer.classList.add("unlocked");
+                        badgeContainer.style.display = "flex";
+                        badgeContainer.animate([
+                           { transform: "translateY(100px) scale(0.5)", opacity: 0 },
+                           { transform: "translateY(0) scale(1.1)", opacity: 1 },
+                           { transform: "translateY(0) scale(0.95)", opacity: 1 },
+                           { transform: "translateY(0) scale(1)", opacity: 1 }
+                        ], { duration: 800, easing: "ease-out" });
+                        if (localStorage.getItem('soundEnabled') !== 'false') {
+                           badgeSound.play().catch(error => console.log('Sound play failed:', error));
+                        }
+                        setTimeout(() => {
+                           badgeContainer.style.display = "none";
+                        }, 4000);
+                        observer.unobserve(section);
+                     }
+                  });
+               }, observerOptions);
+               observer.observe(section);
+               const closeButton = badgeContainer.querySelector('.badge-close');
+               if (closeButton) {
+                  closeButton.addEventListener('click', () => {
+                     badgeContainer.style.display = 'none';
+                  });
+               }
             }
-         } catch (error) {
-            console.error('Error submitting RSVP:', error);
-            alert('A network error occurred. Please try again.');
+         });
+         // RSVP form
+         const rsvpForm = document.getElementById('rsvp-form');
+         if (rsvpForm) {
+            rsvpForm.addEventListener('submit', async (e) => {
+               e.preventDefault();
+               const formData = new FormData(e.target);
+               try {
+                  const response = await fetch(e.target.action, {
+                     method: e.target.method,
+                     body: formData,
+                     headers: { 'Accept': 'application/json' }
+                  });
+                  if (response.ok) {
+                     alert('Thank you for your RSVP! We look forward to seeing you.');
+                     e.target.reset();
+                  } else {
+                     const data = await response.json();
+                     alert('There was an error submitting your RSVP: ' + (data.errors ? data.errors.map(err => err.message).join(', ') : 'Unknown error.'));
+                  }
+               } catch (error) {
+                  console.error('Error submitting RSVP:', error);
+                  alert('A network error occurred. Please try again.');
+               }
+            });
          }
-      });
-   }
-
-   // Back to top
-   document.getElementById('backToTop').addEventListener('click', () => {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-   });
-
-   // Update map iframe
-   const mapIframe = document.querySelector('#event iframe');
-   if (mapIframe) {
-      mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
-   }
-
-   // =============== VOICE NARRATION LOGIC (TELUGU) ===============
-   let narrationEnabled = true;
-   const voiceToggle = document.getElementById('voice-toggle');
-
-   voiceToggle.addEventListener('click', () => {
-      narrationEnabled = !narrationEnabled;
-      voiceToggle.querySelector('i').className = narrationEnabled ? 'fas fa-volume-up' : 'fas fa-volume-mute';
-      voiceToggle.setAttribute('aria-label', narrationEnabled ? 'Disable voice narration' : 'Enable voice narration');
-      window.speechSynthesis.cancel();
-   });
-
-   // preload voices
-   window.speechSynthesis.onvoiceschanged = () => {
-      window.speechSynthesis.getVoices();
-   };
-
-   function narrateSection(sectionId) {
-      if (!narrationEnabled) return;
-      const section = document.getElementById(sectionId);
-      if (!section) return;
-
-      const text = section.innerText;
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = 'te-IN';
-
-      const voices = speechSynthesis.getVoices();
-      const teluguVoice = voices.find(v => v.lang === 'te-IN');
-      if (teluguVoice) utterance.voice = teluguVoice;
-
-      speechSynthesis.cancel(); // Stop ongoing speech
-      speechSynthesis.speak(utterance);
-   }
-
-   const narratableSections = ["about", "guru", "achievements", "event", "invitation", "gallery", "rsvp"];
-   const narrationObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-         if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
-            narrateSection(entry.target.id);
+         // Back to top
+         document.getElementById('backToTop').addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+         });
+         // Update map iframe
+         const mapIframe = document.querySelector('#event iframe');
+         if (mapIframe) {
+            mapIframe.src = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3807.0396001099197!2d78.47164927588386!3d17.40898680193498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3b5fbb1f6d2f398f%3A0xb35a09e078c558c4!2sRavindra%20Bharathi%20Auditorium!5e0!3m2!1sen!2sin!4v1719409893967!5m2!1sen!2sin";
          }
+         // VOICE NARRATION & AMBIENT MUSIC (INVISIBLE AI ASSISTANT)
+         const narrationTexts = {
+            about: "ప్రణవి చింతలపూడి బిట్స్ దుబాయ్‌లో చదువుతున్న విద్యార్థిని మరియు కూచిపూడి నర్తకి. ఆమె చిన్న వయస్సు నుంచే నాట్యం మీద ఆసక్తితో అనేక ప్రదర్శనలతో తన ప్రతిభను చాటుకుంది.",
+            guru: "శ్రీమతి ప్రీతి తాటంభోత్ల గారు, పద్మశ్రీ డాక్టర్ శోభా నాయుడు గారికి శిష్యురాలు. ఆమె కూచిపూడి నాట్యాన్ని సంప్రదాయరీతిలో శిష్యులకు బోధిస్తున్నారు.",
+            achievements: "ప్రణవి అనేక ప్రదర్శనలతో తన నాట్యప్రతిభను చాటుకుంది. ఆమె రాష్ట్ర మరియు జాతీయస్థాయిలో ప్రదర్శనలు ఇచ్చారు.",
+            event: "ఈ రంగప్రవేశం వేడుక ఆగస్టు 2వ తేదీ, 2025న సాయంత్రం 5:30 గంటలకు రవీంద్ర భారతి ఆడిటోరియంలో జరుగుతుంది. మీకు మా హృదయపూర్వక ఆహ్వానం.",
+            invitation: "ఈ పావన సందర్భంలో మీరు పాల్గొనడం మాకు గౌరవం. కుటుంబసభ్యుల ప్రేమతో ఈ ఆహ్వానం.",
+            gallery: "ఈ గ్యాలరీలో ప్రణవి ప్రదర్శించిన నాట్య క్షణాలను మీరు ఆస్వాదించవచ్చు.",
+            rsvp: "ఈ వేడుకలో మీరు పాల్గొనగలరా? దయచేసి మీ పేరును మరియు నిర్ణయాన్ని నమోదు చేయండి."
+         };
+         const sloka = "శ్రీ గురుభ్యో నమః। నాట్యం దేవతలకు అర్పణ। నాట్యమంటే తత్త్వాన్ని పలికే భాష.";
+         const welcome = "శ్రీమతి ప్రణవి చింతలపూడి గారి రంగప్రవేశం వెబ్‌సైట్‌కు స్వాగతం. ప్రతి విభాగాన్ని మీరు స్క్రోల్ చేసినప్పుడు, తెలుగులో వివరాలు వినిపిస్తాయి.";
+         const bgMusic = new Audio("https://cdn.pixabay.com/audio/2023/03/28/audio_bfe3e40078.mp3");
+         const ambient = new Audio("https://cdn.pixabay.com/audio/2022/03/21/audio_d0604e6d3d.mp3");
+         bgMusic.loop = true;
+         bgMusic.volume = 0.25;
+         ambient.loop = true;
+         ambient.volume = 0.05;
+         function playMusic() {
+            bgMusic.play().catch(() => {
+               document.body.addEventListener('click', () => {
+                  bgMusic.play();
+                  ambient.play();
+               }, { once: true });
+            });
+            ambient.play().catch(() => {});
+         }
+         function speakTelugu(text, scrollId = null) {
+            const msg = new SpeechSynthesisUtterance(text);
+            msg.lang = 'te-IN';
+            msg.rate = 0.95;
+            msg.pitch = 1;
+            const voices = speechSynthesis.getVoices();
+            const telugu = voices.find(v => v.lang === 'te-IN');
+            if (telugu) msg.voice = telugu;
+            bgMusic.volume = 0.08;
+            msg.onend = () => {
+               bgMusic.volume = 0.25;
+               if (scrollId) {
+                  const ids = Object.keys(narrationTexts);
+                  const i = ids.indexOf(scrollId);
+                  const next = document.getElementById(ids[i + 1]);
+                  if (next) next.scrollIntoView({ behavior: 'smooth' });
+               }
+            };
+            speechSynthesis.cancel();
+            speechSynthesis.speak(msg);
+         }
+         window.speechSynthesis.onvoiceschanged = () => {
+            speechSynthesis.getVoices();
+            const preload = new SpeechSynthesisUtterance("లోడ్ అయింది");
+            preload.lang = 'te-IN';
+            preload.volume = 0;
+            speechSynthesis.speak(preload);
+            setTimeout(() => {
+               speakTelugu(sloka);
+               setTimeout(() => speakTelugu(welcome), 7000);
+               playMusic();
+            }, 1000);
+         };
+         const narrationObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+               if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+                  const id = entry.target.id;
+                  if (narrationTexts[id]) speakTelugu(narrationTexts[id], id);
+               }
+            });
+         }, { threshold: 0.5 });
+         Object.keys(narrationTexts).forEach(id => {
+            const section = document.getElementById(id);
+            if (section) narrationObserver.observe(section);
+         });
       });
-   }, { threshold: 0.5 });
-
-   narratableSections.forEach(id => {
-      const section = document.getElementById(id);
-      if (section) narrationObserver.observe(section);
-   });
-});
-</script>
+   </script>
 </body>
 </html>
