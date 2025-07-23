@@ -690,16 +690,16 @@
                <p>Carnatic Music Exponent and Member of Royal Family of Travancore</p>
             </div>
          </div>
-         <div id="badge-container-gallery" class="badge-container">
+         <div id="badge-container-chief-guests" class="badge-container">
             <div class="badge-content">
                <i class="fas fa-images badge-icon"></i>
-               <h3 class="badge-title">Guests</h3>
-               <p class="badge-message">Browsed the Guests!</p>
+               <h3 class="badge-title">Chief Guests</h3>
+               <p class="badge-message">Browsed the Chief Guests!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
       </section>
-      <section id="Gallary" class="section">
+      <section id="Gallery" class="section">
          <h2>Gallery</h2>
          <p class="section-subtitle">Moments from Pranavi's dance journey</p>
          <div class="gallery-grid">
@@ -716,8 +716,8 @@
          <div id="badge-container-gallery" class="badge-container">
             <div class="badge-content">
                <i class="fas fa-images badge-icon"></i>
-               <h3 class="badge-title">Guests</h3>
-               <p class="badge-message">Browsed the Guests!</p>
+               <h3 class="badge-title">Gallery</h3>
+               <p class="badge-message">Browsed the Gallery!</p>
                <button class="badge-close" aria-label="Close badge">×</button>
             </div>
          </div>
@@ -871,14 +871,12 @@
                   if (badge && !badge.classList.contains('shown')) {
                      badge.style.display = 'flex';
                      badge.classList.add('shown');
-                     // Add fade-out effect after 5 seconds
                      setTimeout(() => {
                         badge.style.opacity = '0';
                         badge.style.transition = 'opacity 0.5s ease';
-                        // Hide badge after fade-out completes
                         setTimeout(() => {
                            badge.style.display = 'none';
-                           badge.style.opacity = '1'; // Reset opacity for potential future display
+                           badge.style.opacity = '1';
                         }, 500);
                      }, 5000);
                   }
@@ -886,10 +884,8 @@
             });
          }, { threshold: 0.5 });
 
-         // Observe all sections for badges
          document.querySelectorAll('section').forEach(section => badgeObserver.observe(section));
 
-         // Handle badge close button
          document.querySelectorAll('.badge-close').forEach(button => {
             button.addEventListener('click', () => {
                const badge = button.closest('.badge-container');
@@ -898,7 +894,7 @@
                   badge.style.transition = 'opacity 0.5s ease';
                   setTimeout(() => {
                      badge.style.display = 'none';
-                     badge.style.opacity = '1'; // Reset opacity
+                     badge.style.opacity = '1';
                   }, 500);
                }
             });
@@ -906,47 +902,44 @@
 
          // AI Assistant: Text-to-Speech for sections
          const adjustPronunciation = (text) => {
-            // Phonetic adjustments for Indian names
             return text
-               .replace(/\bPranavi\b/g, 'Prah-nah-vee')
-               .replace(/\bPreethi Tatambhotla\b/g, 'Pree-thee Tah-tam-bhot-lah')
-               .replace(/\bSrimati\b/g, 'Shree-mah-tee')
-               .replace(/\bShridhar Babu\b/g, 'Shree-dhar Bah-boo')
-               .replace(/\bJonnalagadda Anuradha\b/g, 'Joh-nah-lah-gah-dah Ah-noo-rah-dhah')
-               .replace(/\bPrince Rama Verma\b/g, 'Prince Rah-mah Ver-mah')
-               .replace(/\bShobha Naidu\b/g, 'Shoh-bhah Nye-doo')
-               .replace(/\bTanikella Bharani\b/g, 'Tah-nee-kel-lah Bah-rah-nee')
-               .replace(/\bChandra Bose\b/g, 'Chan-drah Boh-seh');
+               .replace(/\bPranavi\b/g, 'Praa-nah-vee')
+               .replace(/\bPreethi Tatambhotla\b/g, 'Pree-thi Ta-tam-bhot-la')
+               .replace(/\bSrimati\b/g, 'Shree-ma-ti')
+               .replace(/\bShridhar Babu\b/g, 'Shree-dhar Ba-bu')
+               .replace(/\bJonnalagadda Anuradha\b/g, 'Jon-na-la-gad-da A-nu-ra-dha')
+               .replace(/\bPrince Rama Verma\b/g, 'Prince Raa-ma Var-ma')
+               .replace(/\bShobha Naidu\b/g, 'Sho-bha Nayi-du')
+               .replace(/\bTanikella Bharani\b/g, 'Ta-ni-kel-la Bha-ra-ni')
+               .replace(/\bChandra Bose\b/g, 'Chan-dra Bo-se');
          };
 
          const speakText = (text, section) => {
-            window.speechSynthesis.cancel(); // Cancel any ongoing speech
+            window.speechSynthesis.cancel();
             const adjustedText = adjustPronunciation(text);
             const utterance = new SpeechSynthesisUtterance(adjustedText);
-            // Select an Indian English voice or fallback
             const voices = window.speechSynthesis.getVoices();
-            const preferredVoice = voices.find(voice => voice.lang === 'en-IN') || 
+            const preferredVoice = voices.find(voice => voice.lang === 'te-IN') || 
+                                 voices.find(voice => voice.lang === 'en-IN') || 
                                  voices.find(voice => voice.name.includes('Google UK English')) || 
                                  voices.find(voice => voice.lang === 'en-US') || 
                                  voices[0];
             utterance.voice = preferredVoice;
-            utterance.lang = preferredVoice.lang || 'en-IN';
-            utterance.rate = 0.9; // Slightly slower for clarity
-            utterance.pitch = 1.0; // Neutral pitch
-            utterance.volume = 0.8; // Slightly reduced volume
+            utterance.lang = preferredVoice ? preferredVoice.lang : 'te-IN';
+            utterance.rate = 0.9;
+            utterance.pitch = 1.0;
+            utterance.volume = 0.8;
             utterance.onend = () => {
-               section.classList.add('spoken'); // Mark as spoken when done
+               section.classList.add('spoken');
             };
             window.speechSynthesis.speak(utterance);
-            return utterance; // Return utterance for cancellation
+            return utterance;
          };
 
-         // Extract text from section, excluding badges and non-text elements
          const getSectionText = (section) => {
-            const textElements = section.querySelectorAll('h1, h2, h3, p, li, strong');
+            const textElements = section.querySelectorAll('h1, h2, h3, p, li, strong, .gallery-item p, .guru-content-box p');
             let text = '';
             textElements.forEach(element => {
-               // Skip badge content, countdown, and placeholders
                if (!element.closest('.badge-container') && 
                    !element.closest('#countdown') && 
                    !element.closest('.invitation-placeholder')) {
@@ -956,45 +949,41 @@
             return text.trim();
          };
 
-         // Track the current utterance and section
-         let currentUtterance = null;
-         let currentSection = null;
+         let narrationQueue = [];
+         let isSpeaking = false;
 
-         // Observe sections for text-to-speech
+         const processQueue = () => {
+            if (narrationQueue.length > 0 && !isSpeaking) {
+               const { text, section } = narrationQueue.shift();
+               isSpeaking = true;
+               const utterance = speakText(text, section);
+               utterance.onend = () => {
+                  isSpeaking = false;
+                  section.classList.add('spoken');
+                  processQueue();
+               };
+            }
+         };
+
          const speechObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                const section = entry.target;
-               if (entry.isIntersecting) {
-                  // Stop any ongoing speech
-                  window.speechSynthesis.cancel();
-                  currentUtterance = null;
-                  currentSection = section;
-                  // Start speaking if not already spoken
-                  if (!section.classList.contains('spoken')) {
-                     const text = getSectionText(section);
-                     if (text) {
-                        currentUtterance = speakText(text, section);
-                     }
+               if (entry.isIntersecting && !section.classList.contains('spoken')) {
+                  const text = getSectionText(section);
+                  if (text) {
+                     narrationQueue.push({ text, section });
+                     processQueue();
                   }
-               } else if (section === currentSection) {
-                  // Stop speaking when section leaves viewport
-                  window.speechSynthesis.cancel();
-                  currentUtterance = null;
-                  currentSection = null;
-                  section.classList.remove('spoken'); // Allow re-speaking if re-entered
+               } else if (!entry.isIntersecting && section.classList.contains('spoken')) {
+                  section.classList.remove('spoken');
                }
             });
-         }, { threshold: 0.5 });
+         }, { threshold: 0.3 });
 
-         // Observe all sections for speech
          document.querySelectorAll('section').forEach(section => speechObserver.observe(section));
 
-         // Ensure voices are loaded before speaking
          window.speechSynthesis.onvoiceschanged = () => {
-            // Clear spoken class to allow re-speaking with new voices
-            document.querySelectorAll('section.spoken').forEach(section => {
-               section.classList.remove('spoken');
-            });
+            console.log('Voices loaded:', window.speechSynthesis.getVoices().map(v => `${v.name} (${v.lang})`));
          };
       });
    </script>
